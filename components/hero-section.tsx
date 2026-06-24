@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Download, Mail, Sparkles } from "lucide-react"
+import { ArrowRight, Sparkles } from "lucide-react"
 import { GithubIcon, LinkedinIcon } from "@/components/brand-icons"
 import { ParticleNetwork } from "@/components/particle-network"
 import { getTechIcon } from "@/components/tech-icon"
@@ -14,44 +14,55 @@ export function HeroSection() {
     >
       <div className="absolute inset-0 grid-bg opacity-60" aria-hidden="true" />
       <ParticleNetwork />
+
       <div
         className="absolute left-1/2 top-1/3 -z-0 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-primary/15 blur-[140px]"
         aria-hidden="true"
       />
+
       <div
         className="absolute right-10 bottom-20 -z-0 h-72 w-72 rounded-full bg-accent/10 blur-[120px]"
         aria-hidden="true"
       />
 
       <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr]">
+        {/* Left Content */}
         <div>
           <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs text-muted-foreground">
             <Sparkles className="size-3.5 text-primary" />
-            Cloud-native · DevOps · Automation
+            Azure • Kubernetes • Terraform • GitHub Actions • DevSecOps
           </div>
 
           <h1 className="mt-6 text-balance text-5xl font-semibold tracking-tight sm:text-6xl lg:text-7xl">
             <span className="text-gradient">{profile.name}</span>
           </h1>
+
           <p className="mt-3 text-2xl font-medium text-foreground/90 sm:text-3xl">
             {profile.role}
           </p>
 
           <p className="mt-5 max-w-xl text-pretty leading-relaxed text-muted-foreground">
-            {profile.certLine}
+            <span className="font-medium text-primary">
+              {profile.certLine}
+            </span>
             <br className="hidden sm:block" />
             {profile.experienceLine}
+            <br className="hidden sm:block" />
+            Building scalable cloud infrastructure, Kubernetes platforms,
+            CI/CD pipelines, Terraform automation, and DevSecOps solutions
+            across Azure and AWS environments.
           </p>
 
+          {/* CTA Buttons */}
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
               href="/Tushar-Mishra-Resume.pdf"
               download
               className="group inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.03] glow-primary"
             >
-              <Download className="size-4" />
-              Download Resume
+              Resume
             </a>
+
             <a
               href="#projects"
               className="group inline-flex items-center gap-2 rounded-xl glass px-5 py-3 text-sm font-medium transition-colors hover:bg-foreground/10"
@@ -59,15 +70,50 @@ export function HeroSection() {
               View Projects
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </a>
+
             <a
-              href="#contact"
+              href={profile.github}
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center gap-2 rounded-xl glass px-5 py-3 text-sm font-medium transition-colors hover:bg-foreground/10"
             >
-              <Mail className="size-4" />
-              Contact Me
+              <GithubIcon className="size-4" />
+              GitHub
             </a>
           </div>
 
+          {/* Stats */}
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="rounded-xl glass p-4 text-center transition hover:scale-105">
+              <h3 className="text-xl font-bold text-primary">1.5+</h3>
+              <p className="text-xs text-muted-foreground">
+                Years Experience
+              </p>
+            </div>
+
+            <div className="rounded-xl glass p-4 text-center transition hover:scale-105">
+              <h3 className="text-xl font-bold text-primary">AZ-104</h3>
+              <p className="text-xs text-muted-foreground">
+                Microsoft Certified
+              </p>
+            </div>
+
+            <div className="rounded-xl glass p-4 text-center transition hover:scale-105">
+              <h3 className="text-xl font-bold text-primary">15+</h3>
+              <p className="text-xs text-muted-foreground">
+                Cloud & DevOps Tools
+              </p>
+            </div>
+
+            <div className="rounded-xl glass p-4 text-center transition hover:scale-105">
+              <h3 className="text-xl font-bold text-primary">Azure & AWS</h3>
+              <p className="text-xs text-muted-foreground">
+                Cloud Platforms
+              </p>
+            </div>
+          </div>
+
+          {/* Social Icons */}
           <div className="mt-6 flex items-center gap-3">
             <a
               href={profile.github}
@@ -78,6 +124,7 @@ export function HeroSection() {
             >
               <GithubIcon className="size-5" />
             </a>
+
             <a
               href={profile.linkedin}
               target="_blank"
@@ -88,12 +135,24 @@ export function HeroSection() {
               <LinkedinIcon className="size-5" />
             </a>
           </div>
+
+          <div className="mt-4">
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+            >
+              View My GitHub Projects →
+            </a>
+          </div>
         </div>
 
-        {/* Floating tech orbit */}
+        {/* Floating Tech Orbit */}
         <div className="relative mx-auto hidden aspect-square w-full max-w-md lg:block">
           <div className="absolute inset-0 animate-spin-slow rounded-full border border-dashed border-foreground/10" />
           <div className="absolute inset-12 animate-spin-slow rounded-full border border-dashed border-foreground/10 [animation-direction:reverse]" />
+
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex size-28 flex-col items-center justify-center rounded-2xl glass text-center glow-primary">
               <span className="text-2xl font-semibold text-primary">∞</span>
@@ -109,6 +168,7 @@ export function HeroSection() {
             const radius = 46
             const x = 50 + Math.cos(angle) * radius
             const y = 50 + Math.sin(angle) * radius
+
             return (
               <div
                 key={tech}
@@ -135,10 +195,11 @@ export function HeroSection() {
           })}
         </div>
 
-        {/* Mobile tech chips */}
+        {/* Mobile Tech Chips */}
         <div className="flex flex-wrap gap-2 lg:hidden">
           {heroTech.map((tech) => {
             const Icon = getTechIcon(tech)
+
             return (
               <span
                 key={tech}

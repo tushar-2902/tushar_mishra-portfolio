@@ -21,7 +21,7 @@ export const heroTech = [
 export const stats = [
   { value: "1.5+", label: "Years Experience" },
   { value: "AZ-104", label: "Microsoft Certified" },
-  { value: "10+", label: "DevOps Tools" },
+  { value: "15+", label: "DevOps Tools" },
   { value: "Multiple", label: "Production Deployments" },
 ]
 
@@ -35,7 +35,7 @@ export const focusAreas = [
 ]
 
 export const skillGroups: { category: string; skills: string[] }[] = [
-  { category: "Cloud", skills: ["Azure", "AWS"] },
+  { category: "Cloud", skills: ["Azure", "AWS", "GCP"] },
   { category: "Infrastructure as Code", skills: ["Terraform", "Ansible"] },
   { category: "Containers", skills: ["Docker", "Kubernetes"] },
   { category: "CI/CD", skills: ["GitHub Actions", "Jenkins", "Azure DevOps"] },
