@@ -27,12 +27,20 @@ export function ParticleNetwork() {
     let height = 0
     let dpr = Math.min(window.devicePixelRatio || 1, 2)
     let nodes: Node[] = []
-    const mouse = { x: -9999, y: -9999 }
+
+    const mouse = {
+      x: -9999,
+      y: -9999,
+    }
+
     let frame = 0
 
     const accent = "120, 190, 255"
 
     function resize() {
+      const canvas = canvasRef.current
+      if (!canvas) return
+
       const rect = canvas.getBoundingClientRect()
 
       width = rect.width
@@ -132,10 +140,15 @@ export function ParticleNetwork() {
         ctx.fill()
       }
 
-      frame = requestAnimationFrame(draw)
+      if (!prefersReduced) {
+        frame = requestAnimationFrame(draw)
+      }
     }
 
     function onMove(e: MouseEvent) {
+      const canvas = canvasRef.current
+      if (!canvas) return
+
       const rect = canvas.getBoundingClientRect()
 
       mouse.x = e.clientX - rect.left
@@ -154,10 +167,6 @@ export function ParticleNetwork() {
     window.addEventListener("mouseout", onLeave)
 
     draw()
-
-    if (prefersReduced) {
-      cancelAnimationFrame(frame)
-    }
 
     return () => {
       cancelAnimationFrame(frame)
