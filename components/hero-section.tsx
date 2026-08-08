@@ -4,7 +4,8 @@ import { ArrowRight, Sparkles } from "lucide-react"
 import { GithubIcon, LinkedinIcon } from "@/components/brand-icons"
 import { ParticleNetwork } from "@/components/particle-network"
 import { getTechIcon } from "@/components/tech-icon"
-import { heroTech, profile } from "@/lib/portfolio-data"
+import { heroTech, profile, stats } from "@/lib/portfolio-data"
+import TypingTerminal from "@/components/typing-terminal"
 
 export function HeroSection() {
   return (
@@ -82,35 +83,17 @@ export function HeroSection() {
             </a>
           </div>
 
-          {/* Stats */}
+          {/* Stats (single source of truth from lib/portfolio-data) */}
           <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="rounded-xl glass p-4 text-center transition hover:scale-105">
-              <h3 className="text-xl font-bold text-primary">1.5+</h3>
-              <p className="text-xs text-muted-foreground">
-                Years Experience
-              </p>
-            </div>
-
-            <div className="rounded-xl glass p-4 text-center transition hover:scale-105">
-              <h3 className="text-xl font-bold text-primary">AZ-104</h3>
-              <p className="text-xs text-muted-foreground">
-                Microsoft Certified
-              </p>
-            </div>
-
-            <div className="rounded-xl glass p-4 text-center transition hover:scale-105">
-              <h3 className="text-xl font-bold text-primary">15+</h3>
-              <p className="text-xs text-muted-foreground">
-                Cloud & DevOps Tools
-              </p>
-            </div>
-
-            <div className="rounded-xl glass p-4 text-center transition hover:scale-105">
-              <h3 className="text-xl font-bold text-primary">Azure & AWS</h3>
-              <p className="text-xs text-muted-foreground">
-                Cloud Platforms
-              </p>
-            </div>
+            {stats.map((s) => (
+              <div
+                key={s.label}
+                className="rounded-xl glass p-4 text-center transition hover:scale-105"
+              >
+                <h3 className="text-xl font-bold text-primary">{s.value}</h3>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+              </div>
+            ))}
           </div>
 
           {/* Social Icons */}
@@ -148,51 +131,17 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Floating Tech Orbit */}
-        <div className="relative mx-auto hidden aspect-square w-full max-w-md lg:block">
-          <div className="absolute inset-0 animate-spin-slow rounded-full border border-dashed border-foreground/10" />
-          <div className="absolute inset-12 animate-spin-slow rounded-full border border-dashed border-foreground/10 [animation-direction:reverse]" />
-
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex size-28 flex-col items-center justify-center rounded-2xl glass text-center glow-primary">
-              <span className="text-2xl font-semibold text-primary">∞</span>
-              <span className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
-                CI / CD
-              </span>
-            </div>
-          </div>
-
-          {heroTech.map((tech, i) => {
-            const Icon = getTechIcon(tech)
-            const angle = (i / heroTech.length) * Math.PI * 2
-            const radius = 46
-            const x = 50 + Math.cos(angle) * radius
-            const y = 50 + Math.sin(angle) * radius
-
-            return (
-              <div
-                key={tech}
-                className="absolute"
-                style={{
-                  left: `${x}%`,
-                  top: `${y}%`,
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                <div
-                  className="animate-float-slow"
-                  style={{ animationDelay: `${i * 0.4}s` }}
-                >
-                  <div className="group flex size-16 flex-col items-center justify-center gap-1 rounded-2xl glass transition-colors hover:bg-primary/15">
-                    <Icon className="size-5 text-primary" />
-                    <span className="text-[9px] font-medium text-muted-foreground">
-                      {tech}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+        {/* Desktop: animated typing terminal showing DevOps commands */}
+        <div className="relative mx-auto hidden w-full max-w-md lg:block">
+          <TypingTerminal
+            className="rounded-2xl glass p-6 text-left"
+            commands={[
+              "kubectl apply -f cluster.yaml",
+              "terraform plan -out=tfplan",
+              "git push origin main",
+              "az aks upgrade --name aks-cluster",
+            ]}
+          />
         </div>
 
         {/* Mobile Tech Chips */}

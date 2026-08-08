@@ -22,13 +22,13 @@ export function ProjectsSection() {
 
         <div className="mt-14 grid grid-cols-1 gap-6">
           {featured && (
-            <ScrollReveal className="group relative overflow-hidden rounded-3xl glass p-8 transition-all duration-300 hover:-translate-y-1 sm:p-10">
+            <ScrollReveal className="group relative overflow-hidden rounded-4xl p-8 sm:p-10 bg-gradient-to-br from-primary/10 via-accent/6 to-transparent ring-1 ring-primary/30 shadow-2xl transition-all duration-300 hover:-translate-y-1">
               <div
                 className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"
                 aria-hidden="true"
               />
               <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary shadow-sm">
                   <Star className="size-3.5" />
                   Flagship Project
                 </span>

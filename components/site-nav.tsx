@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Menu, Terminal, X } from "lucide-react"
+import { Menu, Terminal, X, Sun, Moon } from "lucide-react"
+import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 
 const links = [
@@ -23,6 +24,11 @@ export function SiteNav() {
     window.addEventListener("scroll", onScroll)
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
+
+  // theme (avoid hydration mismatch)
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   return (
     <header
@@ -63,7 +69,22 @@ export function SiteNav() {
         >
           Hire Me
         </a>
-
+        <button
+          type="button"
+          aria-label="Toggle theme"
+          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+          className="ml-3 hidden h-9 w-9 items-center justify-center rounded-lg bg-foreground/[0.03] md:inline-flex"
+        >
+          {mounted ? (
+            resolvedTheme === "dark" ? (
+              <Sun className="size-4 text-primary" />
+            ) : (
+              <Moon className="size-4 text-accent" />
+            )
+          ) : (
+            <Sun className="size-4 text-primary/60" />
+          )}
+        </button>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
