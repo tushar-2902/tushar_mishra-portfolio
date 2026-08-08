@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 
-type Node = {
+type Particle = {
   x: number
   y: number
   vx: number
@@ -10,170 +10,281 @@ type Node = {
 }
 
 export function ParticleNetwork() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
 
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
+    if (canvas === null) {
+      return
+    }
 
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
+    const context = canvas.getContext("2d")
+
+    if (context === null) {
+      return
+    }
+
+    const ctx: CanvasRenderingContext2D = context
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
     ).matches
 
     let width = 0
     let height = 0
-    let dpr = Math.min(window.devicePixelRatio || 1, 2)
-    let nodes: Node[] = []
+    let devicePixelRatio = Math.min(
+      window.devicePixelRatio || 1,
+      2
+    )
+
+    let particles: Particle[] = []
+    let animationFrame = 0
 
     const mouse = {
       x: -9999,
       y: -9999,
     }
 
-    let frame = 0
-
     const accent = "120, 190, 255"
 
-    function resize() {
-      const canvas = canvasRef.current
-      if (!canvas) return
+    const resize = (): void => {
+      const currentCanvas = canvasRef.current
 
-      const rect = canvas.getBoundingClientRect()
+      if (currentCanvas === null) {
+        return
+      }
+
+      const rect = currentCanvas.getBoundingClientRect()
 
       width = rect.width
       height = rect.height
-      dpr = Math.min(window.devicePixelRatio || 1, 2)
 
-      canvas.width = width * dpr
-      canvas.height = height * dpr
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-
-      const count = Math.min(
-        70,
-        Math.floor((width * height) / 16000),
+      devicePixelRatio = Math.min(
+        window.devicePixelRatio || 1,
+        2
       )
 
-      nodes = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-      }))
+      currentCanvas.width = Math.floor(
+        width * devicePixelRatio
+      )
+
+      currentCanvas.height = Math.floor(
+        height * devicePixelRatio
+      )
+
+      ctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+      )
+
+      const particleCount = Math.min(
+        70,
+        Math.max(
+          20,
+          Math.floor((width * height) / 16000)
+        )
+      )
+
+      particles = Array.from(
+        { length: particleCount },
+        (): Particle => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+        })
+      )
     }
 
-    function draw() {
+    const draw = (): void => {
       ctx.clearRect(0, 0, width, height)
 
-      for (const n of nodes) {
-        n.x += n.vx
-        n.y += n.vy
+      // Move particles
+      for (const particle of particles) {
+        particle.x += particle.vx
+        particle.y += particle.vy
 
-        if (n.x < 0 || n.x > width) {
-          n.vx *= -1
+        if (
+          particle.x <= 0 ||
+          particle.x >= width
+        ) {
+          particle.vx *= -1
         }
 
-        if (n.y < 0 || n.y > height) {
-          n.vy *= -1
+        if (
+          particle.y <= 0 ||
+          particle.y >= height
+        ) {
+          particle.vy *= -1
         }
 
-        const dxm = n.x - mouse.x
-        const dym = n.y - mouse.y
-        const distM = Math.hypot(dxm, dym)
+        const dx =
+          particle.x - mouse.x
 
-        if (distM < 140 && distM > 0) {
-          const force = (140 - distM) / 140
+        const dy =
+          particle.y - mouse.y
 
-          n.x += (dxm / distM) * force * 1.2
-          n.y += (dym / distM) * force * 1.2
+        const distance = Math.hypot(dx, dy)
+
+        if (
+          distance < 140 &&
+          distance > 0
+        ) {
+          const force =
+            (140 - distance) / 140
+
+          particle.x +=
+            (dx / distance) *
+            force *
+            1.2
+
+          particle.y +=
+            (dy / distance) *
+            force *
+            1.2
         }
       }
 
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i]
-          const b = nodes[j]
+      // Draw connections
+      for (
+        let i = 0;
+        i < particles.length;
+        i++
+      ) {
+        for (
+          let j = i + 1;
+          j < particles.length;
+          j++
+        ) {
+          const first = particles[i]
+          const second = particles[j]
 
-          const dist = Math.hypot(
-            a.x - b.x,
-            a.y - b.y,
+          const distance = Math.hypot(
+            first.x - second.x,
+            first.y - second.y
           )
 
-          if (dist < 130) {
-            const opacity = (1 - dist / 130) * 0.5
+          if (distance < 130) {
+            const opacity =
+              (1 - distance / 130) * 0.5
 
             ctx.strokeStyle = `rgba(${accent}, ${opacity})`
             ctx.lineWidth = 1
 
             ctx.beginPath()
-            ctx.moveTo(a.x, a.y)
-            ctx.lineTo(b.x, b.y)
+            ctx.moveTo(
+              first.x,
+              first.y
+            )
+            ctx.lineTo(
+              second.x,
+              second.y
+            )
             ctx.stroke()
           }
         }
       }
 
-      for (const n of nodes) {
-        const near =
-          Math.hypot(
-            n.x - mouse.x,
-            n.y - mouse.y,
-          ) < 140
+      // Draw particles
+      for (const particle of particles) {
+        const distance = Math.hypot(
+          particle.x - mouse.x,
+          particle.y - mouse.y
+        )
+
+        const nearMouse = distance < 140
 
         ctx.beginPath()
 
         ctx.arc(
-          n.x,
-          n.y,
-          near ? 2.6 : 1.8,
+          particle.x,
+          particle.y,
+          nearMouse ? 2.6 : 1.8,
           0,
-          Math.PI * 2,
+          Math.PI * 2
         )
 
         ctx.fillStyle = `rgba(${accent}, ${
-          near ? 0.95 : 0.6
+          nearMouse ? 0.95 : 0.6
         })`
 
         ctx.fill()
       }
 
-      if (!prefersReduced) {
-        frame = requestAnimationFrame(draw)
+      if (!reducedMotion) {
+        animationFrame =
+          requestAnimationFrame(draw)
       }
     }
 
-    function onMove(e: MouseEvent) {
-      const canvas = canvasRef.current
-      if (!canvas) return
+    const handleMouseMove = (
+      event: MouseEvent
+    ): void => {
+      const currentCanvas =
+        canvasRef.current
 
-      const rect = canvas.getBoundingClientRect()
+      if (currentCanvas === null) {
+        return
+      }
 
-      mouse.x = e.clientX - rect.left
-      mouse.y = e.clientY - rect.top
+      const rect =
+        currentCanvas.getBoundingClientRect()
+
+      mouse.x =
+        event.clientX - rect.left
+
+      mouse.y =
+        event.clientY - rect.top
     }
 
-    function onLeave() {
+    const handleMouseLeave = (): void => {
       mouse.x = -9999
       mouse.y = -9999
     }
 
     resize()
 
-    window.addEventListener("resize", resize)
-    window.addEventListener("mousemove", onMove)
-    window.addEventListener("mouseout", onLeave)
+    window.addEventListener(
+      "resize",
+      resize
+    )
+
+    window.addEventListener(
+      "mousemove",
+      handleMouseMove
+    )
+
+    window.addEventListener(
+      "mouseout",
+      handleMouseLeave
+    )
 
     draw()
 
-    return () => {
-      cancelAnimationFrame(frame)
+    return (): void => {
+      cancelAnimationFrame(
+        animationFrame
+      )
 
-      window.removeEventListener("resize", resize)
-      window.removeEventListener("mousemove", onMove)
-      window.removeEventListener("mouseout", onLeave)
+      window.removeEventListener(
+        "resize",
+        resize
+      )
+
+      window.removeEventListener(
+        "mousemove",
+        handleMouseMove
+      )
+
+      window.removeEventListener(
+        "mouseout",
+        handleMouseLeave
+      )
     }
   }, [])
 
