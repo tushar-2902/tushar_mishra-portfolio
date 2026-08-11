@@ -2,7 +2,6 @@
 
 import { ArrowRight, Sparkles } from "lucide-react"
 import { GithubIcon, LinkedinIcon } from "@/components/brand-icons"
-import { ParticleNetwork } from "@/components/particle-network"
 import { getTechIcon } from "@/components/tech-icon"
 import { heroTech, profile, stats } from "@/lib/portfolio-data"
 import TypingTerminal from "@/components/typing-terminal"
@@ -11,20 +10,9 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center overflow-hidden pt-28 pb-20"
+      className="relative flex min-h-screen items-center pt-28 pb-20"
     >
-      <div className="absolute inset-0 grid-bg opacity-60" aria-hidden="true" />
-      <ParticleNetwork />
-
-      <div
-        className="absolute left-1/2 top-1/3 -z-0 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-primary/15 blur-[140px]"
-        aria-hidden="true"
-      />
-
-      <div
-        className="absolute right-10 bottom-20 -z-0 h-72 w-72 rounded-full bg-accent/10 blur-[120px]"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-grid opacity-40" aria-hidden="true" />
 
       <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr]">
         {/* Left Content */}

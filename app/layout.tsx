@@ -44,10 +44,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+import GlobalBackground from '@/components/global-background'
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="font-sans antialiased">
-        <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+      <body className="font-sans antialiased relative overflow-x-hidden">
+        <ThemeProviderWrapper>
+          <GlobalBackground />
+          <div className="relative z-10">{children}</div>
+        </ThemeProviderWrapper>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
