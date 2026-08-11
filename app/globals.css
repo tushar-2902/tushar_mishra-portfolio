@@ -123,6 +123,7 @@
   --sidebar-accent: var(--secondary);
   --sidebar-accent-foreground: var(--secondary-foreground);
   --sidebar-border: rgba(30, 25, 20, 0.08);
+}
 
 @layer base {
   *, *::before, *::after {
