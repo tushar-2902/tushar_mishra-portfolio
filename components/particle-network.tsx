@@ -316,8 +316,10 @@ export function ParticleNetwork() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 h-full w-full"
-      aria-hidden="true"
+      className="fixed inset-0 -z-10 h-screen w-screen"
+      aria-hidden="true"    />
+  )
+}
     />
   )
 }

@@ -43,6 +43,7 @@ export function AboutSection() {
               <ScrollReveal
                 key={stat.label}
                 delay={i * 80}
+                tilt
                 className="flex flex-col justify-center rounded-3xl glass p-6 transition-colors hover:bg-primary/10"
               >
                 <span className="text-3xl font-semibold text-gradient sm:text-4xl">

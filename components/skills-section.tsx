@@ -25,6 +25,7 @@ export function SkillsSection() {
               <ScrollReveal
                 key={group.category}
                 delay={i * 40}
+                tilt
                 className="group glass rounded-[1.5rem] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_22px_56px_rgba(229,178,93,0.10)]"
               >
                 <div className="flex items-center gap-3">
