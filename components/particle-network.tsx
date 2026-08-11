@@ -317,9 +317,7 @@ export function ParticleNetwork() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10 h-screen w-screen"
-      aria-hidden="true"    />
-  )
-}
+      aria-hidden="true"
     />
   )
 }
