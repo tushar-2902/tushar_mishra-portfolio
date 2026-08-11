@@ -87,6 +87,8 @@
     --sidebar-accent: var(--accent);
     --sidebar-accent-foreground: #e7f3ff;
     --sidebar-border: rgba(255, 255, 255, 0.08);
+    --sidebar-ring: var(--ring);
+  }
 
 .light {
   color-scheme: light;
