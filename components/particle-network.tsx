@@ -7,7 +7,15 @@ type Particle = {
   y: number
   vx: number
   vy: number
+  radius: number
+  color: string
 }
+
+const particlePalette = [
+  "255, 244, 229",
+  "229, 178, 93",
+  "179, 120, 206",
+]
 
 export function ParticleNetwork() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -46,8 +54,6 @@ export function ParticleNetwork() {
       y: -9999,
     }
 
-    const accent = "193, 182, 169"
-
     const resize = (): void => {
       const currentCanvas = canvasRef.current
 
@@ -83,26 +89,42 @@ export function ParticleNetwork() {
       )
 
       const particleCount = Math.min(
-        70,
+        100,
         Math.max(
-          20,
-          Math.floor((width * height) / 16000)
+          40,
+          Math.floor((width * height) / 12000)
         )
       )
 
       particles = Array.from(
         { length: particleCount },
-        (): Particle => ({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.35,
-          vy: (Math.random() - 0.5) * 0.35,
-        })
+        (): Particle => {
+          const colorIndex =
+            Math.random() < 0.22
+              ? 1
+              : Math.random() < 0.18
+              ? 2
+              : 0
+
+          return {
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx:
+              (Math.random() - 0.5) *
+              (0.35 + Math.random() * 0.16),
+            vy:
+              (Math.random() - 0.5) *
+              (0.35 + Math.random() * 0.16),
+            radius: 1 + Math.random() * 1.4,
+            color: particlePalette[colorIndex],
+          }
+        }
       )
     }
 
     const draw = (): void => {
       ctx.clearRect(0, 0, width, height)
+      ctx.globalCompositeOperation = "source-over"
 
       // Move particles
       for (const particle of particles) {
@@ -141,12 +163,11 @@ export function ParticleNetwork() {
           particle.x +=
             (dx / distance) *
             force *
-            1.2
-
+            1.1
           particle.y +=
             (dy / distance) *
             force *
-            1.2
+            1.1
         }
       }
 
@@ -169,12 +190,15 @@ export function ParticleNetwork() {
             first.y - second.y
           )
 
-          if (distance < 130) {
+          if (distance < 120) {
             const opacity =
-              (1 - distance / 130) * 0.5
+              (1 - distance / 120) * 0.24
 
-            ctx.strokeStyle = `rgba(${accent}, ${opacity})`
-            ctx.lineWidth = 1
+            ctx.strokeStyle =
+              first.color === second.color
+                ? `rgba(${first.color}, ${opacity})`
+                : `rgba(229, 178, 93, ${opacity * 0.8})`
+            ctx.lineWidth = 0.9
 
             ctx.beginPath()
             ctx.moveTo(
@@ -198,22 +222,23 @@ export function ParticleNetwork() {
         )
 
         const nearMouse = distance < 140
+        const alpha = nearMouse ? 0.92 : 0.55
+        const glowAlpha = nearMouse ? 0.12 : 0.06
 
         ctx.beginPath()
-
         ctx.arc(
           particle.x,
           particle.y,
-          nearMouse ? 2.6 : 1.8,
+          particle.radius,
           0,
           Math.PI * 2
         )
 
-        ctx.fillStyle = `rgba(${accent}, ${
-          nearMouse ? 0.95 : 0.6
-        })`
-
+        ctx.fillStyle = `rgba(${particle.color}, ${alpha})`
+        ctx.shadowBlur = particle.radius * 1.8
+        ctx.shadowColor = `rgba(${particle.color}, ${glowAlpha})`
         ctx.fill()
+        ctx.shadowBlur = 0
       }
 
       if (!reducedMotion) {
