@@ -4,10 +4,6 @@ import { getTechIcon } from "@/components/tech-icon"
 import { skillGroups } from "@/lib/portfolio-data"
 
 export function SkillsSection() {
-  const CloudIcon = getTechIcon(skillGroups[0].skills[0])
-  const rightSideGroups = skillGroups.slice(3, 6)
-  const secondaryGroups = skillGroups.filter((_, index) => index === 1 || index === 2 || index > 5)
-
   return (
     <section id="skills" className="relative py-24 sm:py-32">
       <div
@@ -22,95 +18,17 @@ export function SkillsSection() {
           description="A full stack of cloud, automation, and security tooling used across the software delivery lifecycle."
         />
 
-        <div className="mt-14 grid gap-5 lg:grid-cols-[1.45fr_0.95fr] items-start">
-          <ScrollReveal
-            className="group rounded-[1.75rem] glass p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-[0_18px_50px_rgba(0,240,255,0.12)]"
-          >
-            <div className="flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_14px_rgba(0,240,255,0.10)]">
-                <CloudIcon className="size-5" />
-              </span>
-              <div>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-                  {skillGroups[0].category}
-                </h3>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {skillGroups[0].skills.length} tools
-                </p>
-              </div>
-            </div>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-              Core infrastructure, orchestration, and delivery tooling for modern platforms.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {skillGroups[0].skills.map((skill) => {
-                const ChipIcon = getTechIcon(skill)
-                return (
-                  <span
-                    key={skill}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
-                  >
-                    <ChipIcon className="size-4 text-primary" />
-                    {skill}
-                  </span>
-                )
-              })}
-            </div>
-          </ScrollReveal>
-
-          <div className="grid gap-5">
-            {rightSideGroups.map((group, i) => {
-              const Icon = getTechIcon(group.skills[0])
-              return (
-                <ScrollReveal
-                  key={group.category}
-                  delay={i * 50}
-                  className="group rounded-[1.75rem] glass p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-[0_18px_50px_rgba(0,240,255,0.12)]"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_14px_rgba(0,240,255,0.10)]">
-                      <Icon className="size-5" />
-                    </span>
-                    <div>
-                      <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-                        {group.category}
-                      </h3>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {group.skills.length} tools
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {group.skills.map((skill) => {
-                      const ChipIcon = getTechIcon(skill)
-                      return (
-                        <span
-                          key={skill}
-                          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
-                        >
-                          <ChipIcon className="size-4 text-primary" />
-                          {skill}
-                        </span>
-                      )
-                    })}
-                  </div>
-                </ScrollReveal>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {secondaryGroups.map((group, i) => {
+        <div className="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {skillGroups.map((group, i) => {
             const Icon = getTechIcon(group.skills[0])
             return (
               <ScrollReveal
                 key={group.category}
                 delay={i * 40}
-                className="group rounded-[1.75rem] glass p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-[0_18px_50px_rgba(0,240,255,0.12)]"
+                className="group glass rounded-[1.5rem] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_22px_56px_rgba(0,240,255,0.10)]"
               >
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_14px_rgba(0,240,255,0.10)]">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_16px_rgba(0,240,255,0.10)]">
                     <Icon className="size-5" />
                   </span>
                   <div>
@@ -128,7 +46,7 @@ export function SkillsSection() {
                     return (
                       <span
                         key={skill}
-                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
+                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-muted-foreground transition duration-200 ease-out hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
                       >
                         <ChipIcon className="size-4 text-primary" />
                         {skill}
