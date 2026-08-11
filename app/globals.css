@@ -51,9 +51,9 @@
 
 :root {
   color-scheme: dark;
-  --background: #06090f;
-  --background-surface: rgba(7, 12, 20, 0.92);
-  --background-overlay: rgba(4, 8, 16, 0.92);
+  --background: oklch(0.13 0.015 255);
+  --background-surface: oklch(0.14 0.018 255 / 0.88);
+  --background-overlay: oklch(0.12 0.014 255 / 0.88);
   --foreground: #e7f3ff;
   --foreground-muted: #b8c8da;
   --primary: #00f0ff;
@@ -61,9 +61,9 @@
   --primary-dark: #00b8d4;
   --accent: #b559ff;
   --accent-soft: rgba(181, 89, 255, 0.16);
-  --surface: rgba(9, 15, 29, 0.78);
-  --surface-strong: rgba(10, 18, 34, 0.94);
-  --surface-soft: rgba(14, 22, 38, 0.72);
+  --surface: oklch(0.175 0.022 255 / 0.78);
+  --surface-strong: oklch(0.16 0.02 255 / 0.94);
+  --surface-soft: oklch(0.18 0.025 255 / 0.72);
   --border: rgba(255, 255, 255, 0.08);
   --border-soft: rgba(0, 240, 255, 0.12);
   --ring: rgba(0, 240, 255, 0.22);
@@ -71,9 +71,9 @@
   --muted: #8da4c4;
   --muted-foreground: #9eb7d9;
   --destructive: #ff6e7a;
-  --card: rgba(9, 14, 26, 0.82);
+  --card: oklch(0.175 0.022 255);
   --card-foreground: #f3f8ff;
-  --popover: rgba(11, 18, 32, 0.96);
+  --popover: oklch(0.175 0.02 255 / 0.96);
   --popover-foreground: #ebf4ff;
   --chart-1: #00f0ff;
   --chart-2: #b559ff;
@@ -81,7 +81,7 @@
   --chart-4: #6f7dff;
   --chart-5: #53d5ff;
   --radius: 1.15rem;
-  --sidebar: rgba(7, 11, 18, 0.88);
+  --sidebar: oklch(0.14 0.02 255 / 0.88);
   --sidebar-foreground: #e7f3ff;
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: #071116;
