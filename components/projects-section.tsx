@@ -20,51 +20,60 @@ export function ProjectsSection() {
           description="Selected projects showcasing cloud architecture, automation, and DevSecOps in practice."
         />
 
-        <div className="mt-14 grid grid-cols-1 gap-6">
+        <div className="mt-14 grid gap-6">
           {featured && (
-            <ScrollReveal className="group relative overflow-hidden rounded-4xl p-8 sm:p-10 bg-gradient-to-br from-primary/10 via-accent/6 to-transparent ring-1 ring-primary/30 shadow-2xl transition-all duration-300 hover:-translate-y-1">
-              <div
-                className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"
-                aria-hidden="true"
-              />
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary shadow-sm">
+            <ScrollReveal className="group relative overflow-hidden rounded-[2rem] border border-primary/15 bg-surface/90 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_50px_140px_rgba(0,240,255,0.2)]">
+              <div className="absolute inset-x-5 top-5 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" aria-hidden="true" />
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-primary shadow-[0_0_24px_rgba(0,240,255,0.14)]">
                   <Star className="size-3.5" />
                   Flagship Project
                 </span>
+                <div className="hidden rounded-full border border-primary/20 bg-white/5 px-4 py-2 text-xs text-muted-foreground sm:inline-flex">
+                  Premium Delivery
+                </div>
               </div>
-              <h3 className="mt-5 text-balance text-2xl font-semibold sm:text-3xl">
-                {featured.title}
-              </h3>
-              <p className="mt-3 max-w-2xl text-pretty leading-relaxed text-muted-foreground">
-                {featured.summary}
-              </p>
 
-              <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+              <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-3xl">
+                  <h3 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+                    {featured.title}
+                  </h3>
+                  <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+                    {featured.summary}
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-primary/20 bg-white/5 px-5 py-4 text-sm text-primary shadow-[0_0_30px_rgba(0,240,255,0.12)]">
+                  <p className="font-semibold">DevOps Focus</p>
+                  <p className="mt-2 text-muted-foreground">GitOps, AKS, security gates, observability</p>
+                </div>
+              </div>
+
+              <div className="mt-10 grid gap-6 lg:grid-cols-2">
                 <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  <h4 className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
                     Key Features
                   </h4>
-                  <ul className="mt-4 space-y-2.5">
+                  <ul className="mt-4 space-y-3">
                     {featured.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-2.5 text-sm">
-                        <span className="flex size-5 items-center justify-center rounded-full bg-primary/15 text-primary">
-                          <Check className="size-3" />
+                      <li key={feature} className="flex items-start gap-3 text-sm text-foreground">
+                        <span className="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_20px_rgba(0,240,255,0.1)]">
+                          <Check className="size-4" />
                         </span>
-                        {feature}
+                        <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  <h4 className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
                     Tech Stack
                   </h4>
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="mt-4 flex flex-wrap gap-3">
                     {featured.tech.map((tech) => (
                       <span
                         key={tech}
-                        className="rounded-lg bg-foreground/[0.05] px-3 py-1.5 text-xs ring-1 ring-foreground/5"
+                        className="rounded-2xl bg-white/5 px-3 py-2 text-sm text-muted-foreground ring-1 ring-white/10"
                       >
                         {tech}
                       </span>
@@ -75,28 +84,28 @@ export function ProjectsSection() {
             </ScrollReveal>
           )}
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {rest.map((project, i) => (
               <ScrollReveal
                 key={project.title}
                 delay={i * 80}
-                className="group flex h-full flex-col rounded-3xl glass p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-foreground/[0.04]"
+                className="group flex h-full flex-col rounded-[1.75rem] glass p-6 border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_28px_90px_rgba(0,240,255,0.12)]"
               >
-                <div className="flex items-center justify-between">
-                  <span className="flex size-11 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-[0_0_20px_rgba(0,240,255,0.12)]">
                     <Folder className="size-5" />
                   </span>
-                  <ArrowUpRight className="size-5 text-muted-foreground transition-colors group-hover:text-primary" />
+                  <ArrowUpRight className="size-5 text-muted-foreground transition-colors duration-300 group-hover:text-primary" />
                 </div>
-                <h3 className="mt-5 text-lg font-semibold">{project.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                <h3 className="mt-6 text-xl font-semibold text-foreground">{project.title}</h3>
+                <p className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">
                   {project.summary}
                 </p>
-                <div className="mt-5 flex flex-wrap gap-1.5">
+                <div className="mt-6 flex flex-wrap gap-2">
                   {project.tech.map((tech) => (
                     <span
                       key={tech}
-                      className="rounded-md bg-foreground/[0.05] px-2 py-1 text-[11px] text-muted-foreground ring-1 ring-foreground/5"
+                      className="rounded-2xl bg-white/5 px-3 py-2 text-xs text-muted-foreground ring-1 ring-white/10"
                     >
                       {tech}
                     </span>
