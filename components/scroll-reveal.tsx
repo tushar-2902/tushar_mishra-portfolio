@@ -3,18 +3,23 @@
 import { useEffect, useRef, type ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
-export function ScrollReveal({
-  children,
-  className,
-  delay = 0,
-  as: Tag = "div",
-}: {
+type ScrollRevealTag = "div" | "li" | "section" | "article"
+
+type ScrollRevealProps<T extends ScrollRevealTag = "div"> = {
   children: ReactNode
   className?: string
   delay?: number
-  as?: "div" | "li" | "section" | "article"
-}) {
-  const ref = useRef<HTMLElement>(null)
+  as?: T
+} & Omit<React.ComponentPropsWithoutRef<T>, "className" | "style" | "children">
+
+export function ScrollReveal<T extends ScrollRevealTag = "div">({
+  children,
+  className,
+  delay = 0,
+  as,
+  ...rest
+}: ScrollRevealProps<T>) {
+  const ref = useRef<HTMLDivElement | HTMLLIElement | HTMLElement>(null)
 
   useEffect(() => {
     const el = ref.current
@@ -34,14 +39,16 @@ export function ScrollReveal({
     return () => observer.disconnect()
   }, [])
 
-  const Component = Tag as React.ElementType
+  const Tag = (as ?? "div") as T
+
   return (
-    <Component
-      ref={ref}
+    <Tag
+      ref={ref as React.RefObject<HTMLElement>}
       className={cn("reveal", className)}
       style={{ transitionDelay: `${delay}ms` }}
+      {...rest}
     >
       {children}
-    </Component>
+    </Tag>
   )
 }
