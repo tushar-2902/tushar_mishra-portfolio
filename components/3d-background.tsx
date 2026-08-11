@@ -17,6 +17,7 @@ type Particle = {
 
 const AMBER = "#e5b468"
 const VIOLET = "#b17db1"
+const STARLIGHT = "#f4f0ff"
 const BACKGROUND_COLOR = "#070808"
 
 function randomBetween(min: number, max: number) {
@@ -70,9 +71,20 @@ function createParticles(count: number): Particle[] {
   return Array.from({ length: count }, (_, index) => {
     const z = randomBetween(-5.8, -2.1)
     const layer = z < -4.4 ? "distance" : z < -3.1 ? "mid" : "foreground"
-    const size = layer === "foreground" ? randomBetween(0.11, 0.18) : layer === "mid" ? randomBetween(0.065, 0.095) : randomBetween(0.035, 0.055)
-    const color = Math.random() < 0.16 ? VIOLET : AMBER
-    const opacity = layer === "distance" ? randomBetween(0.14, 0.24) : layer === "mid" ? randomBetween(0.32, 0.44) : randomBetween(0.72, 0.88)
+    const size =
+      layer === "foreground"
+        ? randomBetween(0.11, 0.18)
+        : layer === "mid"
+        ? randomBetween(0.065, 0.095)
+        : randomBetween(0.035, 0.055)
+    const color =
+      Math.random() < 0.55 ? STARLIGHT : Math.random() < 0.7 ? VIOLET : AMBER
+    const opacity =
+      layer === "distance"
+        ? randomBetween(0.2, 0.34)
+        : layer === "mid"
+        ? randomBetween(0.4, 0.55)
+        : randomBetween(0.78, 0.95)
 
     return {
       id: `node-${index}`,
@@ -92,7 +104,12 @@ function createConnections(particles: Particle[], maxDistance: number) {
 
   for (const source of particles) {
     const sorted = particles
-      .map((target) => ({ target, distance: new THREE.Vector3(...source.base).distanceTo(new THREE.Vector3(...target.base)) }))
+      .map((target) => ({
+        target,
+        distance: new THREE.Vector3(...source.base).distanceTo(
+          new THREE.Vector3(...target.base),
+        ),
+      }))
       .filter((item) => item.target.id !== source.id)
       .sort((a, b) => a.distance - b.distance)
       .slice(0, 5)
@@ -143,16 +160,17 @@ function ParticleNode({ particle }: { particle: Particle }) {
   )
 }
 
-function ConnectionLine({ source: sourceBase, target: targetBase, color }: {
+function ConnectionLine({
+  source: sourceBase,
+  target: targetBase,
+  color,
+}: {
   source: [number, number, number]
   target: [number, number, number]
   color: string
 }) {
   const points = useMemo(
-    () => [
-      new THREE.Vector3(...sourceBase),
-      new THREE.Vector3(...targetBase),
-    ],
+    () => [new THREE.Vector3(...sourceBase), new THREE.Vector3(...targetBase)],
     [sourceBase, targetBase],
   )
 
@@ -174,11 +192,14 @@ function BackgroundScene() {
   const pointerMotion = usePointerMotion()
   const sceneRef = useRef<THREE.Group>(null)
 
-  const particleCount = isMobile ? 26 : 42
+  const particleCount = isMobile ? 34 : 60
   const maxConnectionDistance = isMobile ? 1.6 : 2.2
 
   const particles = useMemo(() => createParticles(particleCount), [particleCount])
-  const connections = useMemo(() => createConnections(particles, maxConnectionDistance), [particles, maxConnectionDistance])
+  const connections = useMemo(
+    () => createConnections(particles, maxConnectionDistance),
+    [particles, maxConnectionDistance],
+  )
 
   useFrame((_, delta) => {
     if (!sceneRef.current) return
@@ -188,8 +209,10 @@ function BackgroundScene() {
 
     sceneRef.current.rotation.y += (targetX - sceneRef.current.rotation.y) * 0.05
     sceneRef.current.rotation.x += (targetY - sceneRef.current.rotation.x) * 0.05
-    sceneRef.current.position.x += (pointerMotion.current.x * 0.55 - sceneRef.current.position.x) * 0.04
-    sceneRef.current.position.y += (pointerMotion.current.y * 0.35 - sceneRef.current.position.y) * 0.04
+    sceneRef.current.position.x +=
+      (pointerMotion.current.x * 0.55 - sceneRef.current.position.x) * 0.04
+    sceneRef.current.position.y +=
+      (pointerMotion.current.y * 0.35 - sceneRef.current.position.y) * 0.04
 
     if (!reducedMotion.current) {
       sceneRef.current.rotation.z += 0.0012 * delta
@@ -198,10 +221,10 @@ function BackgroundScene() {
 
   return (
     <group ref={sceneRef}>
-      <fog attach="fog" args={[BACKGROUND_COLOR, 3.8, 15]} />
-      <ambientLight color="#f2e0b7" intensity={0.19} />
-      <pointLight color="#dbad5b" intensity={0.14} position={[-2.6, 2.1, -1.4]} />
-      <pointLight color="#d49d7f" intensity={0.1} position={[2.3, 1.6, -2.6]} />
+      <fog attach="fog" args={[BACKGROUND_COLOR, 4.5, 16]} />
+      <ambientLight color="#f2e0b7" intensity={0.22} />
+      <pointLight color="#dbad5b" intensity={0.16} position={[-2.6, 2.1, -1.4]} />
+      <pointLight color="#d49d7f" intensity={0.12} position={[2.3, 1.6, -2.6]} />
 
       <group>
         {particles.map((particle) => (
@@ -209,12 +232,14 @@ function BackgroundScene() {
         ))}
       </group>
 
-      {connections.map(([source, target], index) => (
+      {connections.map(([source, target]) => (
         <ConnectionLine
           key={`${source.id}-${target.id}`}
           source={source.base}
           target={target.base}
-          color={source.color === VIOLET || target.color === VIOLET ? VIOLET : AMBER}
+          color={
+            source.color === VIOLET || target.color === VIOLET ? VIOLET : AMBER
+          }
         />
       ))}
     </group>
@@ -228,13 +253,19 @@ export default function ThreeDBackground() {
         style={{
           position: "absolute",
           inset: 0,
-          background: `radial-gradient(circle at 20% 15%, rgba(229,180,104,0.09), transparent 18%), radial-gradient(circle at 82% 72%, rgba(177,125,171,0.05), transparent 20%), ${BACKGROUND_COLOR}`,
-          opacity: 0.95,
+          background: `radial-gradient(circle at 20% 15%, rgba(229,180,104,0.12), transparent 22%), radial-gradient(circle at 82% 72%, rgba(177,125,171,0.08), transparent 24%)`,
+          opacity: 0.35,
           pointerEvents: "none",
         }}
       />
       <Canvas
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", background: "transparent" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          background: "transparent",
+        }}
         camera={{ position: [0, 0, 11], fov: 40, near: 0.1, far: 25 }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         dpr={[1, 1.4]}
