@@ -136,8 +136,8 @@ function WireframeShell({
 }
 
 function NodeLineNetwork() {
-  const linePoints = useMemo(
-    () => [
+  const linePoints = useMemo(() => {
+    const rawPoints: [number, number, number][][] = [
       [
         [-3.8, 1.2, -4.5],
         [-2.2, 0.7, -3.2],
@@ -153,9 +153,14 @@ function NodeLineNetwork() {
         [1.8, -1.1, -4.2],
         [3, -0.4, -5.3],
       ],
-    ],
-    []
-  )
+    ]
+
+    return rawPoints.map((group) =>
+      group.map(
+        (point) => new THREE.Vector3(point[0], point[1], point[2])
+      )
+    )
+  }, [])
 
   return (
     <group>
