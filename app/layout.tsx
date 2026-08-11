@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import ThemeProviderWrapper from '@/components/theme-provider'
-import GlobalBackground from '@/components/global-background'
+import ThreeDBackground from '@/components/3d-background'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({
@@ -49,7 +49,7 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="font-sans antialiased relative overflow-x-hidden">
         <ThemeProviderWrapper>
-          <GlobalBackground />
+          <ThreeDBackground />
           <div className="relative z-10">{children}</div>
         </ThemeProviderWrapper>
         {process.env.NODE_ENV === 'production' && <Analytics />}
