@@ -25,10 +25,10 @@ export function SkillsSection() {
               <ScrollReveal
                 key={group.category}
                 delay={i * 40}
-                className="group glass rounded-[1.5rem] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_22px_56px_rgba(0,240,255,0.10)]"
+                className="group glass rounded-[1.5rem] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_22px_56px_rgba(229,178,93,0.10)]"
               >
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_16px_rgba(0,240,255,0.10)]">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_16px_rgba(229,178,93,0.10)]">
                     <Icon className="size-5" />
                   </span>
                   <div>

@@ -56,7 +56,7 @@ export function SiteNav() {
         )}
       >
         <a href="#home" className="flex items-center gap-3 rounded-full px-3 py-2 text-sm font-semibold text-foreground transition hover:bg-white/5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/15 text-primary shadow-[0_0_30px_rgba(0,240,255,0.16)]">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/15 text-primary shadow-[0_0_30px_rgba(229,178,93,0.16)]">
             <Terminal className="size-4" />
           </span>
           <span className="tracking-tight">Tushar Mishra</span>
@@ -80,7 +80,7 @@ export function SiteNav() {
                 >
                   {link.label}
                   {isActive ? (
-                    <span className="absolute left-1/2 -bottom-2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_20px_rgba(0,240,255,0.24)]" />
+                    <span className="absolute left-1/2 -bottom-2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_20px_rgba(229,178,93,0.24)]" />
                   ) : null}
                 </a>
               </li>

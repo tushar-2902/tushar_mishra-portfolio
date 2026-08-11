@@ -46,7 +46,7 @@ export function ParticleNetwork() {
       y: -9999,
     }
 
-    const accent = "120, 190, 255"
+    const accent = "193, 182, 169"
 
     const resize = (): void => {
       const currentCanvas = canvasRef.current

@@ -22,10 +22,10 @@ export function ProjectsSection() {
 
         <div className="mt-14 grid gap-6">
           {featured && (
-            <ScrollReveal className="group relative overflow-hidden rounded-[2rem] border border-primary/15 bg-surface/90 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_50px_140px_rgba(0,240,255,0.2)]">
+            <ScrollReveal className="group relative overflow-hidden rounded-[2rem] border border-primary/15 bg-surface/90 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_50px_140px_rgba(229,178,93,0.18)]">
               <div className="absolute inset-x-5 top-5 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" aria-hidden="true" />
               <div className="flex flex-wrap items-center justify-between gap-4">
-                <span className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-primary shadow-[0_0_24px_rgba(0,240,255,0.14)]">
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-primary shadow-[0_0_24px_rgba(229,178,93,0.14)]">
                   <Star className="size-3.5" />
                   Flagship Project
                 </span>
@@ -43,7 +43,7 @@ export function ProjectsSection() {
                     {featured.summary}
                   </p>
                 </div>
-                <div className="rounded-3xl border border-primary/20 bg-white/5 px-5 py-4 text-sm text-primary shadow-[0_0_30px_rgba(0,240,255,0.12)]">
+                <div className="rounded-3xl border border-primary/20 bg-white/5 px-5 py-4 text-sm text-primary shadow-[0_0_30px_rgba(229,178,93,0.12)]">
                   <p className="font-semibold">DevOps Focus</p>
                   <p className="mt-2 text-muted-foreground">GitOps, AKS, security gates, observability</p>
                 </div>
@@ -57,7 +57,7 @@ export function ProjectsSection() {
                   <ul className="mt-4 space-y-3">
                     {featured.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3 text-sm text-foreground">
-                        <span className="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_20px_rgba(0,240,255,0.1)]">
+                        <span className="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_20px_rgba(229,178,93,0.1)]">
                           <Check className="size-4" />
                         </span>
                         <span>{feature}</span>
@@ -89,10 +89,10 @@ export function ProjectsSection() {
               <ScrollReveal
                 key={project.title}
                 delay={i * 80}
-                className="group flex h-full flex-col rounded-[1.75rem] glass p-6 border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_28px_90px_rgba(0,240,255,0.12)]"
+                className="group flex h-full flex-col rounded-[1.75rem] glass p-6 border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_28px_90px_rgba(229,178,93,0.12)]"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-[0_0_20px_rgba(0,240,255,0.12)]">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-[0_0_20px_rgba(229,178,93,0.12)]">
                     <Folder className="size-5" />
                   </span>
                   <ArrowUpRight className="size-5 text-muted-foreground transition-colors duration-300 group-hover:text-primary" />
