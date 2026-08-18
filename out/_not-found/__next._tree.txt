@@ -1,2 +1,2 @@
-:HL["/tushar_mishra-portfolio/_next/static/chunks/0_5c_601qbknl.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"TPqF4vBpW6mOhQnuhnZdw"}
+:HL["/tushar_mishra-portfolio/_next/static/chunks/0j0~5..ot2le..css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"BHaovbUSTlcIwdtV7quvR"}
