@@ -3,6 +3,7 @@
 import { ArrowRight, Sparkles } from "lucide-react"
 import { GithubIcon, LinkedinIcon } from "@/components/brand-icons"
 import { getTechIcon } from "@/components/tech-icon"
+import { TiltCard } from "@/components/tilt-card"
 import { heroTech, profile, stats } from "@/lib/portfolio-data"
 import TypingTerminal from "@/components/typing-terminal"
 
@@ -74,13 +75,13 @@ export function HeroSection() {
           {/* Stats (single source of truth from lib/portfolio-data) */}
           <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {stats.map((s) => (
-              <div
+              <TiltCard
                 key={s.label}
-                className="rounded-xl glass p-4 text-center transition hover:scale-105"
+                className="rounded-xl glass p-4 text-center transition-all duration-200"
               >
                 <h3 className="text-xl font-bold text-primary">{s.value}</h3>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
-              </div>
+              </TiltCard>
             ))}
           </div>
 
