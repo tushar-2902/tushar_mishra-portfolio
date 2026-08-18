@@ -2,322 +2,155 @@
 
 import { useEffect, useRef } from "react"
 
-type Particle = {
+type Star = {
   x: number
   y: number
-  vx: number
-  vy: number
-  radius: number
+  z: number
+  size: number
+  speed: number
+  alpha: number
   color: string
 }
-
-const particlePalette = [
-  "255, 244, 229",
-  "229, 178, 93",
-  "179, 120, 206",
-]
 
 export function ParticleNetwork() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
-
-    if (canvas === null) {
-      return
-    }
+    if (!canvas) return
 
     const context = canvas.getContext("2d")
+    if (!context) return
 
-    if (context === null) {
-      return
-    }
-
-    const ctx: CanvasRenderingContext2D = context
-
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const mouse = { x: 0, y: 0 }
 
     let width = 0
     let height = 0
-    let devicePixelRatio = Math.min(
-      window.devicePixelRatio || 1,
-      2
-    )
-
-    let particles: Particle[] = []
     let animationFrame = 0
+    let stars: Star[] = []
 
-    const mouse = {
-      x: -9999,
-      y: -9999,
-    }
-
-    const resize = (): void => {
-      const currentCanvas = canvasRef.current
-
-      if (currentCanvas === null) {
-        return
-      }
-
-      const rect = currentCanvas.getBoundingClientRect()
-
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect()
       width = rect.width
       height = rect.height
 
-      devicePixelRatio = Math.min(
-        window.devicePixelRatio || 1,
-        2
-      )
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width = Math.floor(width * dpr)
+      canvas.height = Math.floor(height * dpr)
+      context.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      currentCanvas.width = Math.floor(
-        width * devicePixelRatio
-      )
-
-      currentCanvas.height = Math.floor(
-        height * devicePixelRatio
-      )
-
-      ctx.setTransform(
-        devicePixelRatio,
-        0,
-        0,
-        devicePixelRatio,
-        0,
-        0
-      )
-
-      const particleCount = Math.min(
-        100,
-        Math.max(
-          40,
-          Math.floor((width * height) / 12000)
-        )
-      )
-
-      particles = Array.from(
-        { length: particleCount },
-        (): Particle => {
-          const colorIndex =
-            Math.random() < 0.22
-              ? 1
-              : Math.random() < 0.18
-              ? 2
-              : 0
-
-          return {
-            x: Math.random() * width,
-            y: Math.random() * height,
-            vx:
-              (Math.random() - 0.5) *
-              (0.35 + Math.random() * 0.16),
-            vy:
-              (Math.random() - 0.5) *
-              (0.35 + Math.random() * 0.16),
-            radius: 1 + Math.random() * 1.4,
-            color: particlePalette[colorIndex],
-          }
-        }
-      )
+      const starCount = Math.min(220, Math.max(120, Math.floor((width * height) / 14)))
+      stars = Array.from({ length: starCount }, () => createStar())
     }
 
-    const draw = (): void => {
-      ctx.clearRect(0, 0, width, height)
-      ctx.globalCompositeOperation = "source-over"
+    const createStar = (): Star => {
+      const depth = Math.random()
+      const x = (Math.random() - 0.5) * 2
+      const y = (Math.random() - 0.5) * 2
+      const size = 0.8 + Math.random() * 2.8 + (1 - depth) * 1.8
+      const speed = 0.1 + (1 - depth) * 0.8
 
-      // Move particles
-      for (const particle of particles) {
-        particle.x += particle.vx
-        particle.y += particle.vy
+      return {
+        x,
+        y,
+        z: depth,
+        size,
+        speed,
+        alpha: 0.3 + Math.random() * 0.7,
+        color: Math.random() > 0.82 ? "rgba(151, 206, 255, 1)" : "rgba(220, 244, 255, 1)",
+      }
+    }
 
-        if (
-          particle.x <= 0 ||
-          particle.x >= width
-        ) {
-          particle.vx *= -1
+    const resetStar = (star: Star) => {
+      star.x = (Math.random() - 0.5) * 2
+      star.y = (Math.random() - 0.5) * 2
+      star.z = 1
+      star.size = 0.8 + Math.random() * 2.8
+      star.speed = 0.1 + Math.random() * 0.7
+      star.alpha = 0.25 + Math.random() * 0.75
+    }
+
+    const draw = (time: number) => {
+      context.clearRect(0, 0, width, height)
+      context.fillStyle = "rgba(8, 13, 18, 0.18)"
+      context.fillRect(0, 0, width, height)
+
+      const parallaxX = mouse.x * 0.18
+      const parallaxY = mouse.y * 0.18
+
+      for (const star of stars) {
+        if (reducedMotion) {
+          star.z = Math.max(0.1, star.z - 0.002)
+        } else {
+          star.z = Math.max(0.08, star.z - star.speed * 0.012)
         }
 
-        if (
-          particle.y <= 0 ||
-          particle.y >= height
-        ) {
-          particle.vy *= -1
+        if (star.z <= 0.08) {
+          resetStar(star)
         }
 
-        const dx =
-          particle.x - mouse.x
+        const perspective = 1.2 / star.z
+        const offsetX = (star.x + parallaxX * (1.15 - star.z)) * width * 0.62 * perspective
+        const offsetY = (star.y + parallaxY * (1.15 - star.z)) * height * 0.62 * perspective
 
-        const dy =
-          particle.y - mouse.y
+        const px = width / 2 + offsetX
+        const py = height / 2 + offsetY
 
-        const distance = Math.hypot(dx, dy)
+        const radius = Math.max(0.6, star.size * perspective)
+        const alpha = Math.min(1, star.alpha * (0.5 + perspective * 0.75))
 
-        if (
-          distance < 140 &&
-          distance > 0
-        ) {
-          const force =
-            (140 - distance) / 140
-
-          particle.x +=
-            (dx / distance) *
-            force *
-            1.1
-          particle.y +=
-            (dy / distance) *
-            force *
-            1.1
+        if (px < -20 || px > width + 20 || py < -20 || py > height + 20) {
+          resetStar(star)
+          continue
         }
+
+        context.beginPath()
+        context.arc(px, py, radius, 0, Math.PI * 2)
+        context.fillStyle = star.color.replace(/1\)$/, `${alpha})`)
+        context.shadowBlur = radius * 2.4
+        context.shadowColor = "rgba(120, 214, 255, 0.5)"
+        context.fill()
       }
 
-      // Draw connections
-      for (
-        let i = 0;
-        i < particles.length;
-        i++
-      ) {
-        for (
-          let j = i + 1;
-          j < particles.length;
-          j++
-        ) {
-          const first = particles[i]
-          const second = particles[j]
-
-          const distance = Math.hypot(
-            first.x - second.x,
-            first.y - second.y
-          )
-
-          if (distance < 120) {
-            const opacity =
-              (1 - distance / 120) * 0.24
-
-            ctx.strokeStyle =
-              first.color === second.color
-                ? `rgba(${first.color}, ${opacity})`
-                : `rgba(229, 178, 93, ${opacity * 0.8})`
-            ctx.lineWidth = 0.9
-
-            ctx.beginPath()
-            ctx.moveTo(
-              first.x,
-              first.y
-            )
-            ctx.lineTo(
-              second.x,
-              second.y
-            )
-            ctx.stroke()
-          }
-        }
-      }
-
-      // Draw particles
-      for (const particle of particles) {
-        const distance = Math.hypot(
-          particle.x - mouse.x,
-          particle.y - mouse.y
-        )
-
-        const nearMouse = distance < 140
-        const alpha = nearMouse ? 0.92 : 0.55
-        const glowAlpha = nearMouse ? 0.12 : 0.06
-
-        ctx.beginPath()
-        ctx.arc(
-          particle.x,
-          particle.y,
-          particle.radius,
-          0,
-          Math.PI * 2
-        )
-
-        ctx.fillStyle = `rgba(${particle.color}, ${alpha})`
-        ctx.shadowBlur = particle.radius * 1.8
-        ctx.shadowColor = `rgba(${particle.color}, ${glowAlpha})`
-        ctx.fill()
-        ctx.shadowBlur = 0
-      }
+      context.shadowBlur = 0
 
       if (!reducedMotion) {
-        animationFrame =
-          requestAnimationFrame(draw)
+        animationFrame = requestAnimationFrame(draw)
+      } else {
+        cancelAnimationFrame(animationFrame)
       }
     }
 
-    const handleMouseMove = (
-      event: MouseEvent
-    ): void => {
-      const currentCanvas =
-        canvasRef.current
-
-      if (currentCanvas === null) {
-        return
-      }
-
-      const rect =
-        currentCanvas.getBoundingClientRect()
-
-      mouse.x =
-        event.clientX - rect.left
-
-      mouse.y =
-        event.clientY - rect.top
+    const handlePointerMove = (event: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouse.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2
+      mouse.y = ((event.clientY - rect.top) / rect.height - 0.5) * 2
     }
 
-    const handleMouseLeave = (): void => {
-      mouse.x = -9999
-      mouse.y = -9999
+    const handlePointerLeave = () => {
+      mouse.x = 0
+      mouse.y = 0
     }
 
     resize()
+    window.addEventListener("resize", resize)
+    window.addEventListener("pointermove", handlePointerMove)
+    window.addEventListener("pointerleave", handlePointerLeave)
 
-    window.addEventListener(
-      "resize",
-      resize
-    )
+    if (!reducedMotion) {
+      animationFrame = requestAnimationFrame(draw)
+    } else {
+      draw(0)
+    }
 
-    window.addEventListener(
-      "mousemove",
-      handleMouseMove
-    )
-
-    window.addEventListener(
-      "mouseout",
-      handleMouseLeave
-    )
-
-    draw()
-
-    return (): void => {
-      cancelAnimationFrame(
-        animationFrame
-      )
-
-      window.removeEventListener(
-        "resize",
-        resize
-      )
-
-      window.removeEventListener(
-        "mousemove",
-        handleMouseMove
-      )
-
-      window.removeEventListener(
-        "mouseout",
-        handleMouseLeave
-      )
+    return () => {
+      cancelAnimationFrame(animationFrame)
+      window.removeEventListener("resize", resize)
+      window.removeEventListener("pointermove", handlePointerMove)
+      window.removeEventListener("pointerleave", handlePointerLeave)
     }
   }, [])
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 -z-10 h-screen w-screen"
-      aria-hidden="true"
-    />
-  )
+  return <canvas ref={canvasRef} aria-hidden="true" className="fixed inset-0 -z-10 h-screen w-screen" />
 }
