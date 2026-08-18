@@ -22,7 +22,10 @@ export function ProjectsSection() {
 
         <div className="mt-14 grid gap-6">
           {featured && (
-            <ScrollReveal className="group relative overflow-hidden rounded-[2rem] border border-primary/15 bg-surface/90 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_50px_140px_rgba(229,178,93,0.18)]">
+            <ScrollReveal
+              tilt
+              className="group relative overflow-hidden rounded-[2rem] border border-primary/15 bg-surface/90 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_50px_140px_rgba(229,178,93,0.18)]"
+            >
               <div className="absolute inset-x-5 top-5 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" aria-hidden="true" />
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <span className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-primary shadow-[0_0_24px_rgba(229,178,93,0.14)]">
@@ -89,6 +92,7 @@ export function ProjectsSection() {
               <ScrollReveal
                 key={project.title}
                 delay={i * 80}
+                tilt
                 className="group flex h-full flex-col rounded-[1.75rem] glass p-6 border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_28px_90px_rgba(229,178,93,0.12)]"
               >
                 <div className="flex items-center justify-between gap-3">

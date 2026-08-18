@@ -47,6 +47,9 @@ export function ScrollReveal({
     const el = ref.current
     if (!el || !tilt || reducedMotionRef.current) return
 
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches
+    if (isCoarsePointer) return
+
     const handleMouseMove = (event: MouseEvent): void => {
       const rect = el.getBoundingClientRect()
       if (rect.width === 0 || rect.height === 0) return
@@ -55,16 +58,17 @@ export function ScrollReveal({
       const y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))
       const rotateX = (0.5 - y) * 12
       const rotateY = (x - 0.5) * 12
-      const translateY = -4
+      const translateY = -8
+      const scale = 1.02
 
-      el.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(${translateY}px)`
+      el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(${translateY}px) scale(${scale})`
       el.style.setProperty("--tilt-x", `${x * 100}%`)
       el.style.setProperty("--tilt-y", `${y * 100}%`)
     }
 
     const handleMouseLeave = (): void => {
       const isVisible = el.classList.contains("is-visible")
-      el.style.transform = isVisible ? "translateY(0)" : "translateY(32px)"
+      el.style.transform = isVisible ? "translateY(0) scale(1)" : "translateY(32px) scale(1)"
       el.style.setProperty("--tilt-x", "50%")
       el.style.setProperty("--tilt-y", "50%")
     }
