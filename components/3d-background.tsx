@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react"
 
-const AMBER = "#e5b468"
-const VIOLET = "#b17db1"
+const AMBER = "#f5be6b"
+const BRIGHT_AMBER = "#ffca7a"
+const VIOLET = "#c28ec2"
 const STARLIGHT = "#ffffff"
-const AMBER_GLOW = "rgba(229, 180, 104, "
-const VIOLET_GLOW = "rgba(177, 125, 171, "
+const AMBER_GLOW = "rgba(245, 190, 107, "
+const VIOLET_GLOW = "rgba(194, 142, 194, "
 
 interface Star {
   x: number
@@ -78,43 +79,39 @@ export default function ThreeDBackground() {
       pulseRadius: 0,
     }
 
-    // Stars
     let stars: Star[] = []
-    // Satellites (Starlink Constellation)
     let satellites: Satellite[] = []
-    // Laser Pulses
     let pulses: LaserPulse[] = []
-    // Shooting Stars
     let shootingStars: ShootingStar[] = []
 
     const initScene = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
       width = window.innerWidth
       height = window.innerHeight
-      canvas.width = width * dpr
-      canvas.height = height * dpr
+      canvas.width = Math.floor(width * dpr)
+      canvas.height = Math.floor(height * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      // Initialize Stars
-      const starCount = Math.floor((width * height) / 4500)
-      stars = Array.from({ length: Math.max(120, starCount) }, () => ({
+      // Initialize Dense Starfield
+      const starCount = Math.floor((width * height) / 3200)
+      stars = Array.from({ length: Math.max(160, starCount) }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() < 0.85 ? Math.random() * 1.2 + 0.4 : Math.random() * 2.0 + 1.2,
-        alpha: Math.random() * 0.7 + 0.3,
-        twinkleSpeed: Math.random() * 0.02 + 0.008,
+        radius: Math.random() < 0.8 ? Math.random() * 1.4 + 0.6 : Math.random() * 2.4 + 1.4,
+        alpha: Math.random() * 0.6 + 0.4,
+        twinkleSpeed: Math.random() * 0.03 + 0.01,
         phase: Math.random() * Math.PI * 2,
       }))
 
-      // Initialize Satellites (Multi-plane Starlink Constellation + Satellite Trains)
+      // Initialize Satellites (Starlink Fleet)
       const isMobile = width < 768
-      const satCount = isMobile ? 18 : 34
+      const satCount = isMobile ? 24 : 42
       satellites = []
 
-      // 1. Orbital Plane Satellites
+      // 1. Multi-plane orbital satellites
       for (let i = 0; i < satCount; i++) {
-        const planeAngle = (Math.PI / 4) * (i % 4 === 0 ? 0.3 : i % 4 === 1 ? -0.4 : 0.6)
-        const speed = Math.random() * 0.45 + 0.35
+        const planeAngle = (Math.PI / 4) * (i % 4 === 0 ? 0.35 : i % 4 === 1 ? -0.45 : i % 4 === 2 ? 0.7 : -0.2)
+        const speed = Math.random() * 0.55 + 0.4
         satellites.push({
           id: i,
           x: Math.random() * width,
@@ -122,45 +119,45 @@ export default function ThreeDBackground() {
           vx: Math.cos(planeAngle) * speed,
           vy: Math.sin(planeAngle) * speed,
           angle: planeAngle,
-          size: Math.random() * 1.5 + 3.0,
+          size: Math.random() * 2.0 + 4.0,
           altitude: Math.random() * 0.5 + 0.8,
           orbitalPlane: i % 3,
-          signalTimer: Math.random() * 180,
+          signalTimer: Math.random() * 140,
           signalWaves: [],
-          color: i % 3 === 0 ? AMBER : i % 3 === 1 ? VIOLET : STARLIGHT,
+          color: i % 3 === 0 ? BRIGHT_AMBER : i % 3 === 1 ? VIOLET : STARLIGHT,
         })
       }
 
-      // 2. Starlink "Train" (Synchronized row of satellites moving together)
-      const trainSize = isMobile ? 4 : 7
-      const trainAngle = -0.32
-      const startX = width * 0.15
-      const startY = height * 0.35
-      const trainSpeed = 0.55
+      // 2. Starlink "Satellite Train" (prominent synchronized chain)
+      const trainSize = isMobile ? 5 : 8
+      const trainAngle = -0.28
+      const startX = width * 0.1
+      const startY = height * 0.3
+      const trainSpeed = 0.65
 
       for (let j = 0; j < trainSize; j++) {
         satellites.push({
           id: 100 + j,
-          x: startX - j * 48 * Math.cos(trainAngle),
-          y: startY - j * 48 * Math.sin(trainAngle),
+          x: startX - j * 54 * Math.cos(trainAngle),
+          y: startY - j * 54 * Math.sin(trainAngle),
           vx: Math.cos(trainAngle) * trainSpeed,
           vy: Math.sin(trainAngle) * trainSpeed,
           angle: trainAngle,
-          size: 3.5,
-          altitude: 1.1,
+          size: 4.8,
+          altitude: 1.2,
           orbitalPlane: 99,
-          signalTimer: j * 25,
+          signalTimer: j * 20,
           signalWaves: [],
-          color: AMBER,
+          color: BRIGHT_AMBER,
         })
       }
 
       // Shooting stars
-      shootingStars = Array.from({ length: 2 }, () => ({
+      shootingStars = Array.from({ length: 3 }, () => ({
         x: Math.random() * width,
         y: Math.random() * height * 0.5,
-        len: Math.random() * 80 + 60,
-        speed: Math.random() * 8 + 12,
+        len: Math.random() * 100 + 80,
+        speed: Math.random() * 10 + 14,
         angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
         alpha: 0,
         active: false,
@@ -169,69 +166,83 @@ export default function ThreeDBackground() {
 
     initScene()
 
-    let lastTime = performance.now()
-
     const spawnShootingStar = () => {
       const star = shootingStars.find((s) => !s.active)
       if (star) {
-        star.x = Math.random() * width * 0.8
-        star.y = Math.random() * height * 0.4
+        star.x = Math.random() * width * 0.85
+        star.y = Math.random() * height * 0.45
         star.alpha = 1.0
         star.active = true
       }
     }
 
-    const shootingStarInterval = setInterval(spawnShootingStar, 4500)
+    const shootingStarInterval = setInterval(spawnShootingStar, 3200)
 
-    const render = (now: number) => {
-      const dt = Math.min((now - lastTime) / 1000, 0.1)
-      lastTime = now
-
+    const render = () => {
       ctx.clearRect(0, 0, width, height)
 
-      // 1. Draw Deep Space Background Glows
+      // 1. Draw Space Nebular Ambient Glows
       const bgGrad1 = ctx.createRadialGradient(
-        width * 0.2,
-        height * 0.2,
-        20,
-        width * 0.2,
-        height * 0.2,
-        width * 0.55,
+        width * 0.25,
+        height * 0.25,
+        10,
+        width * 0.25,
+        height * 0.25,
+        width * 0.6,
       )
-      bgGrad1.addColorStop(0, "rgba(229, 180, 104, 0.08)")
-      bgGrad1.addColorStop(1, "rgba(7, 8, 8, 0)")
+      bgGrad1.addColorStop(0, "rgba(245, 190, 107, 0.12)")
+      bgGrad1.addColorStop(0.5, "rgba(245, 190, 107, 0.04)")
+      bgGrad1.addColorStop(1, "rgba(0, 0, 0, 0)")
       ctx.fillStyle = bgGrad1
       ctx.fillRect(0, 0, width, height)
 
       const bgGrad2 = ctx.createRadialGradient(
         width * 0.8,
-        height * 0.75,
-        20,
+        height * 0.7,
+        10,
         width * 0.8,
-        height * 0.75,
-        width * 0.5,
+        height * 0.7,
+        width * 0.55,
       )
-      bgGrad2.addColorStop(0, "rgba(177, 125, 171, 0.07)")
-      bgGrad2.addColorStop(1, "rgba(7, 8, 8, 0)")
+      bgGrad2.addColorStop(0, "rgba(194, 142, 194, 0.10)")
+      bgGrad2.addColorStop(0.5, "rgba(194, 142, 194, 0.03)")
+      bgGrad2.addColorStop(1, "rgba(0, 0, 0, 0)")
       ctx.fillStyle = bgGrad2
       ctx.fillRect(0, 0, width, height)
 
-      // 2. Draw Stars with Twinkling
+      // 2. Draw Faint Orbital Trajectory Rings Across the Sky
+      ctx.strokeStyle = "rgba(245, 190, 107, 0.07)"
+      ctx.lineWidth = 1.0
+      ctx.setLineDash([8, 12])
+      ctx.beginPath()
+      ctx.ellipse(width * 0.5, height * 0.45, width * 0.7, height * 0.35, -0.3, 0, Math.PI * 2)
+      ctx.stroke()
+
+      ctx.strokeStyle = "rgba(194, 142, 194, 0.06)"
+      ctx.beginPath()
+      ctx.ellipse(width * 0.5, height * 0.55, width * 0.75, height * 0.4, 0.25, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.setLineDash([])
+
+      // 3. Draw Stars with Dynamic Twinkle
       for (const s of stars) {
         s.phase += s.twinkleSpeed
-        const currentAlpha = Math.max(0.2, Math.min(1.0, s.alpha + Math.sin(s.phase) * 0.25))
+        const currentAlpha = Math.max(0.25, Math.min(1.0, s.alpha + Math.sin(s.phase) * 0.35))
         ctx.beginPath()
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2)
         ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`
+        ctx.shadowColor = "rgba(255, 255, 255, 0.8)"
+        ctx.shadowBlur = s.radius > 1.5 ? 6 : 0
         ctx.fill()
+        ctx.shadowBlur = 0
       }
 
-      // 3. Draw Shooting Stars
+      // 4. Draw Shooting Star Meteors
       for (const ss of shootingStars) {
         if (!ss.active) continue
         ss.x += Math.cos(ss.angle) * ss.speed
         ss.y += Math.sin(ss.angle) * ss.speed
-        ss.alpha -= 0.018
+        ss.alpha -= 0.02
 
         if (ss.alpha <= 0 || ss.x > width + 100 || ss.y > height + 100) {
           ss.active = false
@@ -242,20 +253,20 @@ export default function ThreeDBackground() {
         const tailY = ss.y - Math.sin(ss.angle) * ss.len
 
         const grad = ctx.createLinearGradient(tailX, tailY, ss.x, ss.y)
-        grad.addColorStop(0, "rgba(229, 180, 104, 0)")
-        grad.addColorStop(0.7, `${AMBER_GLOW}${ss.alpha * 0.6})`)
+        grad.addColorStop(0, "rgba(245, 190, 107, 0)")
+        grad.addColorStop(0.6, `${AMBER_GLOW}${ss.alpha * 0.7})`)
         grad.addColorStop(1, `rgba(255, 255, 255, ${ss.alpha})`)
 
         ctx.strokeStyle = grad
-        ctx.lineWidth = 1.6
+        ctx.lineWidth = 2.2
         ctx.beginPath()
         ctx.moveTo(tailX, tailY)
         ctx.lineTo(ss.x, ss.y)
         ctx.stroke()
       }
 
-      // 4. Update & Draw Intersatellite Laser Mesh (ISLs)
-      const maxLinkDist = width < 768 ? 160 : 240
+      // 5. Intersatellite Laser Cross-Links (Optical Mesh)
+      const maxLinkDist = width < 768 ? 180 : 270
 
       for (let i = 0; i < satellites.length; i++) {
         const satA = satellites[i]
@@ -270,48 +281,47 @@ export default function ThreeDBackground() {
             const linkStrength = 1 - dist / maxLinkDist
             const strokeColor =
               satA.color === VIOLET || satB.color === VIOLET
-                ? `${VIOLET_GLOW}${linkStrength * 0.4})`
-                : `${AMBER_GLOW}${linkStrength * 0.45})`
+                ? `${VIOLET_GLOW}${linkStrength * 0.55})`
+                : `${AMBER_GLOW}${linkStrength * 0.65})`
 
-            // Laser beam line
             ctx.strokeStyle = strokeColor
-            ctx.lineWidth = linkStrength * 1.2
+            ctx.lineWidth = linkStrength * 1.5
             ctx.beginPath()
             ctx.moveTo(satA.x, satA.y)
             ctx.lineTo(satB.x, satB.y)
             ctx.stroke()
 
-            // Random laser pulse spawn
-            if (Math.random() < 0.0035 && pulses.length < 25) {
+            // Spawn traveling laser pulses
+            if (Math.random() < 0.005 && pulses.length < 35) {
               pulses.push({
                 fromX: satA.x,
                 fromY: satA.y,
                 toX: satB.x,
                 toY: satB.y,
                 progress: 0,
-                speed: Math.random() * 0.02 + 0.015,
-                color: satA.color === VIOLET ? VIOLET : AMBER,
+                speed: Math.random() * 0.025 + 0.02,
+                color: satA.color === VIOLET ? VIOLET : BRIGHT_AMBER,
               })
             }
           }
         }
 
-        // 5. Cursor Ground Station Uplink / Downlink
+        // 6. Cursor Ground Station Uplink / Downlink
         if (mouse.active) {
           const mdx = satA.x - mouse.x
           const mdy = satA.y - mouse.y
           const mouseDist = Math.sqrt(mdx * mdx + mdy * mdy)
-          const maxMouseDist = 280
+          const maxMouseDist = 320
 
           if (mouseDist < maxMouseDist) {
             const mouseStrength = 1 - mouseDist / maxMouseDist
             const uplinkGrad = ctx.createLinearGradient(satA.x, satA.y, mouse.x, mouse.y)
-            uplinkGrad.addColorStop(0, `${AMBER_GLOW}${mouseStrength * 0.8})`)
-            uplinkGrad.addColorStop(1, `${AMBER_GLOW}0.05)`)
+            uplinkGrad.addColorStop(0, `${AMBER_GLOW}${mouseStrength * 0.95})`)
+            uplinkGrad.addColorStop(1, `${AMBER_GLOW}0.15)`)
 
             ctx.strokeStyle = uplinkGrad
-            ctx.lineWidth = mouseStrength * 1.8
-            ctx.setLineDash([4, 4])
+            ctx.lineWidth = mouseStrength * 2.2
+            ctx.setLineDash([5, 4])
             ctx.beginPath()
             ctx.moveTo(satA.x, satA.y)
             ctx.lineTo(mouse.x, mouse.y)
@@ -321,7 +331,7 @@ export default function ThreeDBackground() {
         }
       }
 
-      // 6. Update and Draw Laser Data Pulses
+      // 7. Update & Draw High-Speed Laser Data Pulses
       for (let pIdx = pulses.length - 1; pIdx >= 0; pIdx--) {
         const pulse = pulses[pIdx]
         pulse.progress += pulse.speed
@@ -335,41 +345,39 @@ export default function ThreeDBackground() {
         const py = pulse.fromY + (pulse.toY - pulse.fromY) * pulse.progress
 
         ctx.beginPath()
-        ctx.arc(px, py, 2.2, 0, Math.PI * 2)
+        ctx.arc(px, py, 2.8, 0, Math.PI * 2)
         ctx.fillStyle = pulse.color
         ctx.shadowColor = pulse.color
-        ctx.shadowBlur = 8
+        ctx.shadowBlur = 10
         ctx.fill()
         ctx.shadowBlur = 0
       }
 
-      // 7. Update and Draw Starlink Satellites
+      // 8. Update & Draw Starlink Satellites (Solar Wings, Chassis, Radar Pulse)
       for (const sat of satellites) {
-        // Move satellites
         sat.x += sat.vx
         sat.y += sat.vy
 
-        // Wrap around screen boundaries with margin
         const margin = 80
         if (sat.x > width + margin) sat.x = -margin
         if (sat.x < -margin) sat.x = width + margin
         if (sat.y > height + margin) sat.y = -margin
         if (sat.y < -margin) sat.y = height + margin
 
-        // Signal wave emission (Starlink phased-array radar beacon)
+        // Radar signal wave emission
         sat.signalTimer++
-        if (sat.signalTimer > 180) {
+        if (sat.signalTimer > 150) {
           sat.signalTimer = 0
-          sat.signalWaves.push({ r: 2, alpha: 0.85 })
+          sat.signalWaves.push({ r: 3, alpha: 0.95 })
         }
 
-        // Draw Expanding Signal Waves
+        // Draw Expanding Signal Wave Rings
         for (let wIdx = sat.signalWaves.length - 1; wIdx >= 0; wIdx--) {
           const wave = sat.signalWaves[wIdx]
-          wave.r += 0.8
-          wave.alpha -= 0.015
+          wave.r += 0.9
+          wave.alpha -= 0.014
 
-          if (wave.alpha <= 0 || wave.r > 60) {
+          if (wave.alpha <= 0 || wave.r > 70) {
             sat.signalWaves.splice(wIdx, 1)
             continue
           }
@@ -378,63 +386,66 @@ export default function ThreeDBackground() {
           ctx.arc(sat.x, sat.y, wave.r, 0, Math.PI * 2)
           ctx.strokeStyle =
             sat.color === VIOLET
-              ? `${VIOLET_GLOW}${wave.alpha * 0.5})`
-              : `${AMBER_GLOW}${wave.alpha * 0.6})`
-          ctx.lineWidth = 1.0
+              ? `${VIOLET_GLOW}${wave.alpha * 0.6})`
+              : `${AMBER_GLOW}${wave.alpha * 0.7})`
+          ctx.lineWidth = 1.2
           ctx.stroke()
         }
 
-        // Draw Satellite Graphics: Central Bus + Solar Array Wings + Antenna
+        // Draw Satellite Graphics
         ctx.save()
         ctx.translate(sat.x, sat.y)
         ctx.rotate(sat.angle)
 
-        // Glow Aura
-        const aura = ctx.createRadialGradient(0, 0, 1, 0, 0, sat.size * 3.2)
+        // Radial Glow Halo
+        const aura = ctx.createRadialGradient(0, 0, 1, 0, 0, sat.size * 3.6)
         aura.addColorStop(
           0,
-          sat.color === VIOLET ? `${VIOLET_GLOW}0.9)` : `${AMBER_GLOW}0.95)`,
+          sat.color === VIOLET ? `${VIOLET_GLOW}1.0)` : `${AMBER_GLOW}1.0)`,
         )
         aura.addColorStop(1, "rgba(0, 0, 0, 0)")
         ctx.fillStyle = aura
         ctx.beginPath()
-        ctx.arc(0, 0, sat.size * 3.2, 0, Math.PI * 2)
+        ctx.arc(0, 0, sat.size * 3.6, 0, Math.PI * 2)
         ctx.fill()
 
         // Solar Array Wing 1 (Top Wing)
-        ctx.fillStyle = AMBER
-        ctx.fillRect(-sat.size * 0.5, -sat.size * 2.2, sat.size, sat.size * 1.5)
+        ctx.fillStyle = BRIGHT_AMBER
+        ctx.fillRect(-sat.size * 0.55, -sat.size * 2.4, sat.size * 1.1, sat.size * 1.6)
 
         // Solar Array Wing 2 (Bottom Wing)
-        ctx.fillRect(-sat.size * 0.5, sat.size * 0.7, sat.size, sat.size * 1.5)
+        ctx.fillRect(-sat.size * 0.55, sat.size * 0.8, sat.size * 1.1, sat.size * 1.6)
 
-        // Central Satellite Bus (Main Body)
+        // Central Satellite Body (Chassis)
         ctx.fillStyle = STARLIGHT
-        ctx.fillRect(-sat.size * 0.65, -sat.size * 0.65, sat.size * 1.3, sat.size * 1.3)
+        ctx.fillRect(-sat.size * 0.7, -sat.size * 0.7, sat.size * 1.4, sat.size * 1.4)
 
-        // Optical Laser / Antenna Point
+        // Optical Laser / Communication Beacon
         ctx.beginPath()
-        ctx.arc(sat.size * 0.8, 0, 1.4, 0, Math.PI * 2)
+        ctx.arc(sat.size * 0.9, 0, 1.8, 0, Math.PI * 2)
         ctx.fillStyle = sat.color
+        ctx.shadowColor = sat.color
+        ctx.shadowBlur = 8
         ctx.fill()
+        ctx.shadowBlur = 0
 
         ctx.restore()
       }
 
-      // 8. Draw Cursor Ground Station Dish / Hologram Ring
+      // 9. Draw Cursor Ground Station Dish / Tracking Reticle
       if (mouse.active) {
-        mouse.pulseRadius = (mouse.pulseRadius + 0.6) % 36
+        mouse.pulseRadius = (mouse.pulseRadius + 0.7) % 40
         ctx.beginPath()
-        ctx.arc(mouse.x, mouse.y, 6 + mouse.pulseRadius * 0.5, 0, Math.PI * 2)
-        ctx.strokeStyle = `${AMBER_GLOW}${Math.max(0, 0.4 - mouse.pulseRadius / 90)})`
-        ctx.lineWidth = 1.2
+        ctx.arc(mouse.x, mouse.y, 8 + mouse.pulseRadius * 0.6, 0, Math.PI * 2)
+        ctx.strokeStyle = `${AMBER_GLOW}${Math.max(0, 0.5 - mouse.pulseRadius / 80)})`
+        ctx.lineWidth = 1.5
         ctx.stroke()
 
         ctx.beginPath()
-        ctx.arc(mouse.x, mouse.y, 3.5, 0, Math.PI * 2)
-        ctx.fillStyle = AMBER
-        ctx.shadowColor = AMBER
-        ctx.shadowBlur = 10
+        ctx.arc(mouse.x, mouse.y, 4, 0, Math.PI * 2)
+        ctx.fillStyle = BRIGHT_AMBER
+        ctx.shadowColor = BRIGHT_AMBER
+        ctx.shadowBlur = 12
         ctx.fill()
         ctx.shadowBlur = 0
       }
@@ -476,7 +487,7 @@ export default function ThreeDBackground() {
       <div
         className="pointer-events-none fixed inset-0 -z-10"
         style={{
-          background: `radial-gradient(circle at 18% 18%, rgba(229,180,104,0.14), transparent 28%), radial-gradient(circle at 82% 75%, rgba(177,125,171,0.11), transparent 30%), #070808`,
+          background: `radial-gradient(circle at 18% 18%, rgba(245,190,107,0.14), transparent 28%), radial-gradient(circle at 82% 75%, rgba(194,142,194,0.11), transparent 30%), #070808`,
         }}
       />
     )
