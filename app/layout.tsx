@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import ThemeProviderWrapper from '@/components/theme-provider'
 import AuroraBackground from '@/components/aurora-background'
-import ThreeDBackground from '@/components/3d-background'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({
@@ -51,7 +50,6 @@ export default function RootLayout({
       <body className="font-sans antialiased relative overflow-x-hidden">
         <ThemeProviderWrapper>
           <AuroraBackground />
-          <ThreeDBackground />
           <div className="relative z-10">{children}</div>
         </ThemeProviderWrapper>
         {process.env.NODE_ENV === 'production' && <Analytics />}
