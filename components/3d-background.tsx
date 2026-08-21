@@ -12,16 +12,19 @@ const VIOLET_GLOW = "rgba(194, 142, 194, "
 interface Star {
   x: number
   y: number
+  z: number
   radius: number
   alpha: number
   twinkleSpeed: number
   phase: number
+  drift: number
 }
 
 interface Satellite {
   id: number
   x: number
   y: number
+  z: number
   vx: number
   vy: number
   angle: number
@@ -92,20 +95,22 @@ export default function ThreeDBackground() {
       canvas.height = Math.floor(height * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      // Initialize Dense Starfield
-      const starCount = Math.floor((width * height) / 3200)
-      stars = Array.from({ length: Math.max(160, starCount) }, () => ({
+      // Initialize Dense 3D Starfield with parallax depth
+      const starCount = Math.floor((width * height) / 2200)
+      stars = Array.from({ length: Math.max(220, starCount) }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() < 0.8 ? Math.random() * 1.4 + 0.6 : Math.random() * 2.4 + 1.4,
-        alpha: Math.random() * 0.6 + 0.4,
-        twinkleSpeed: Math.random() * 0.03 + 0.01,
+        z: Math.random() * 1.2 + 0.2,
+        radius: Math.random() < 0.8 ? Math.random() * 1.4 + 0.6 : Math.random() * 2.6 + 1.4,
+        alpha: Math.random() * 0.65 + 0.3,
+        twinkleSpeed: Math.random() * 0.04 + 0.015,
         phase: Math.random() * Math.PI * 2,
+        drift: (Math.random() - 0.5) * 0.35,
       }))
 
       // Initialize Satellites (Starlink Fleet)
       const isMobile = width < 768
-      const satCount = isMobile ? 24 : 42
+      const satCount = isMobile ? 28 : 52
       satellites = []
 
       // 1. Multi-plane orbital satellites
@@ -116,6 +121,7 @@ export default function ThreeDBackground() {
           id: i,
           x: Math.random() * width,
           y: Math.random() * height,
+          z: Math.random() * 0.9 + 0.4,
           vx: Math.cos(planeAngle) * speed,
           vy: Math.sin(planeAngle) * speed,
           angle: planeAngle,
@@ -140,6 +146,7 @@ export default function ThreeDBackground() {
           id: 100 + j,
           x: startX - j * 54 * Math.cos(trainAngle),
           y: startY - j * 54 * Math.sin(trainAngle),
+          z: 1.1 + (j / trainSize) * 0.3,
           vx: Math.cos(trainAngle) * trainSpeed,
           vy: Math.sin(trainAngle) * trainSpeed,
           angle: trainAngle,
@@ -224,15 +231,25 @@ export default function ThreeDBackground() {
       ctx.stroke()
       ctx.setLineDash([])
 
-      // 3. Draw Stars with Dynamic Twinkle
+      // 3. Draw Stars with Dynamic Twinkle and parallax depth
       for (const s of stars) {
         s.phase += s.twinkleSpeed
+        s.x += s.drift
+
+        if (s.x < -10) s.x = width + 10
+        if (s.x > width + 10) s.x = -10
+
+        const perspective = 0.35 + s.z * 1.25
+        const px = (s.x - width / 2) * perspective + width / 2
+        const py = (s.y - height / 2) * perspective + height / 2
         const currentAlpha = Math.max(0.25, Math.min(1.0, s.alpha + Math.sin(s.phase) * 0.35))
+        const drawRadius = Math.max(0.5, s.radius * perspective)
+
         ctx.beginPath()
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2)
+        ctx.arc(px, py, drawRadius, 0, Math.PI * 2)
         ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`
-        ctx.shadowColor = "rgba(255, 255, 255, 0.8)"
-        ctx.shadowBlur = s.radius > 1.5 ? 6 : 0
+        ctx.shadowColor = "rgba(255, 255, 255, 0.9)"
+        ctx.shadowBlur = drawRadius > 1.3 ? 10 : 4
         ctx.fill()
         ctx.shadowBlur = 0
       }
@@ -355,8 +372,8 @@ export default function ThreeDBackground() {
 
       // 8. Update & Draw Starlink Satellites (Solar Wings, Chassis, Radar Pulse)
       for (const sat of satellites) {
-        sat.x += sat.vx
-        sat.y += sat.vy
+        sat.x += sat.vx * (0.8 + sat.z * 0.5)
+        sat.y += sat.vy * (0.8 + sat.z * 0.5)
 
         const margin = 80
         if (sat.x > width + margin) sat.x = -margin
@@ -494,11 +511,17 @@ export default function ThreeDBackground() {
   }
 
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      style={{
+        transform: "perspective(1300px) rotateX(10deg)",
+        transformOrigin: "center center",
+      }}
+    >
       <canvas
         ref={canvasRef}
         className="absolute inset-0 h-full w-full pointer-events-none"
-        style={{ display: "block" }}
+        style={{ display: "block", opacity: 0.96 }}
       />
     </div>
   )
