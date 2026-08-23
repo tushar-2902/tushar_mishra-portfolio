@@ -5,11 +5,12 @@ import { useEffect, useRef } from "react"
 type Star = {
   x: number
   y: number
-  z: number
+  vx: number
+  vy: number
   size: number
-  speed: number
   alpha: number
-  color: string
+  color: "amber" | "violet"
+  featured: boolean
 }
 
 export function ParticleNetwork() {
@@ -40,76 +41,88 @@ export function ParticleNetwork() {
       canvas.height = Math.floor(height * dpr)
       context.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      const starCount = Math.min(220, Math.max(120, Math.floor((width * height) / 14)))
+      const starCount = Math.min(
+        width < 640 ? 72 : 150,
+        Math.max(width < 640 ? 48 : 90, Math.floor((width * height) / 14500)),
+      )
       stars = Array.from({ length: starCount }, () => createStar())
     }
 
     const createStar = (): Star => {
-      const depth = Math.random()
-      const x = (Math.random() - 0.5) * 2
-      const y = (Math.random() - 0.5) * 2
-      const size = 0.8 + Math.random() * 2.8 + (1 - depth) * 1.8
-      const speed = 0.1 + (1 - depth) * 0.8
-
       return {
-        x,
-        y,
-        z: depth,
-        size,
-        speed,
-        alpha: 0.3 + Math.random() * 0.7,
-        color: Math.random() > 0.82 ? "rgba(151, 206, 255, 1)" : "rgba(220, 244, 255, 1)",
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.09,
+        vy: (Math.random() - 0.5) * 0.09,
+        size: 0.65 + Math.random() * 1.15,
+        alpha: 0.28 + Math.random() * 0.42,
+        color: Math.random() > 0.84 ? "violet" : "amber",
+        featured: Math.random() > 0.9,
       }
-    }
-
-    const resetStar = (star: Star) => {
-      star.x = (Math.random() - 0.5) * 2
-      star.y = (Math.random() - 0.5) * 2
-      star.z = 1
-      star.size = 0.8 + Math.random() * 2.8
-      star.speed = 0.1 + Math.random() * 0.7
-      star.alpha = 0.25 + Math.random() * 0.75
     }
 
     const draw = (time: number) => {
       context.clearRect(0, 0, width, height)
-      context.fillStyle = "rgba(8, 13, 18, 0.18)"
-      context.fillRect(0, 0, width, height)
 
-      const parallaxX = mouse.x * 0.18
-      const parallaxY = mouse.y * 0.18
+      const pointerOffsetX = mouse.x * 3
+      const pointerOffsetY = mouse.y * 3
 
       for (const star of stars) {
-        if (reducedMotion) {
-          star.z = Math.max(0.1, star.z - 0.002)
-        } else {
-          star.z = Math.max(0.08, star.z - star.speed * 0.012)
+        if (!reducedMotion) {
+          star.x += star.vx
+          star.y += star.vy
+          if (star.x < -12) star.x = width + 12
+          if (star.x > width + 12) star.x = -12
+          if (star.y < -12) star.y = height + 12
+          if (star.y > height + 12) star.y = -12
         }
+      }
 
-        if (star.z <= 0.08) {
-          resetStar(star)
+      const maxLinkDistance = width < 640 ? 105 : width < 1100 ? 135 : 175
+      for (let index = 0; index < stars.length; index += 1) {
+        const star = stars[index]
+        for (let nextIndex = index + 1; nextIndex < stars.length; nextIndex += 1) {
+          const nextStar = stars[nextIndex]
+          const dx = star.x - nextStar.x
+          const dy = star.y - nextStar.y
+          const distance = Math.hypot(dx, dy)
+          if (distance >= maxLinkDistance) continue
+
+          const strength = 1 - distance / maxLinkDistance
+          const midpointX = (star.x + nextStar.x) / 2
+          const midpointY = (star.y + nextStar.y) / 2
+          const curve = Math.sin((time * 0.00012) + index) * 4 * strength
+          const strokeAlpha = 0.025 + strength * 0.11
+
+          context.beginPath()
+          context.moveTo(star.x, star.y)
+          context.quadraticCurveTo(midpointX - dy * 0.02 + curve, midpointY + dx * 0.02 + curve, nextStar.x, nextStar.y)
+          context.strokeStyle = star.color === "violet" || nextStar.color === "violet"
+            ? `rgba(190, 145, 207, ${strokeAlpha * 0.8})`
+            : `rgba(229, 178, 93, ${strokeAlpha})`
+          context.lineWidth = 0.45 + strength * 0.35
+          context.stroke()
         }
+      }
 
-        const perspective = 1.2 / star.z
-        const offsetX = (star.x + parallaxX * (1.15 - star.z)) * width * 0.62 * perspective
-        const offsetY = (star.y + parallaxY * (1.15 - star.z)) * height * 0.62 * perspective
+      for (const star of stars) {
+        const px = star.x + pointerOffsetX
+        const py = star.y + pointerOffsetY
+        const twinkle = 0.86 + Math.sin(time * 0.0012 + star.x) * 0.14
+        const radius = star.size * (star.featured ? 1.35 : 1)
+        const color = star.color === "violet" ? "190, 145, 207" : "229, 178, 93"
 
-        const px = width / 2 + offsetX
-        const py = height / 2 + offsetY
-
-        const radius = Math.max(0.6, star.size * perspective)
-        const alpha = Math.min(1, star.alpha * (0.5 + perspective * 0.75))
-
-        if (px < -20 || px > width + 20 || py < -20 || py > height + 20) {
-          resetStar(star)
-          continue
+        if (star.featured) {
+          context.beginPath()
+          context.arc(px, py, radius * 4.5, 0, Math.PI * 2)
+          context.fillStyle = `rgba(${color}, ${0.045 * twinkle})`
+          context.fill()
         }
-
         context.beginPath()
         context.arc(px, py, radius, 0, Math.PI * 2)
-        context.fillStyle = star.color.replace(/1\)$/, `${alpha})`)
-        context.shadowBlur = radius * 2.4
-        context.shadowColor = "rgba(120, 214, 255, 0.5)"
+        context.fillStyle = `rgba(${color}, ${star.alpha * twinkle})`
+        context.shadowBlur = star.featured ? 8 : 3
+        context.shadowColor = `rgba(${color}, 0.55)`
         context.fill()
       }
 
@@ -138,11 +151,7 @@ export function ParticleNetwork() {
     window.addEventListener("pointermove", handlePointerMove)
     window.addEventListener("pointerleave", handlePointerLeave)
 
-    if (!reducedMotion) {
-      animationFrame = requestAnimationFrame(draw)
-    } else {
-      draw(0)
-    }
+    animationFrame = requestAnimationFrame(draw)
 
     return () => {
       cancelAnimationFrame(animationFrame)

@@ -281,7 +281,6 @@ export function HeroSection() {
       id="home"
       className="relative isolate flex min-h-screen items-center pt-28 pb-20"
     >
-      <HeroConstellation />
       <div className="absolute inset-0 bg-grid opacity-30" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr]">
