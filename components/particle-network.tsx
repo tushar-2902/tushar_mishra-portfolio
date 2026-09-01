@@ -54,25 +54,25 @@ export function ParticleNetwork() {
       canvas.height = Math.floor(height * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      const count = width < 768 ? 24 : 36
+      const count = width < 768 ? 18 : 28
       const generated: ConstellationNode[] = []
 
       for (let i = 0; i < count; i += 1) {
         const rand = Math.random()
         const color: ConstellationNode["color"] =
-          rand < 0.7 ? "amber" : rand < 0.92 ? "violet" : "white"
+          rand < 0.72 ? "amber" : rand < 0.9 ? "violet" : "white"
 
         generated.push({
           x: width * (0.08 + Math.random() * 0.84),
           y: height * (0.08 + Math.random() * 0.84),
-          z: 0.35 + Math.random() * 0.8,
+          z: 0.3 + Math.random() * 0.8,
           phase: Math.random() * Math.PI * 2,
-          driftX: (Math.random() - 0.5) * 10,
-          driftY: (Math.random() - 0.5) * 10,
-          size: color === "white" ? 0.8 : 0.9 + Math.random() * 0.9,
-          alpha: color === "white" ? 0.22 : 0.28 + Math.random() * 0.22,
+          driftX: (Math.random() - 0.5) * 7,
+          driftY: (Math.random() - 0.5) * 7,
+          size: color === "white" ? 0.65 : 0.7 + Math.random() * 0.7,
+          alpha: color === "white" ? 0.14 : 0.17 + Math.random() * 0.14,
           color,
-          glow: Math.random() > 0.8,
+          glow: Math.random() > 0.88,
         })
       }
 
@@ -93,8 +93,8 @@ export function ParticleNetwork() {
         height * 0.18,
         width * 0.7,
       )
-      glowA.addColorStop(0, "rgba(229, 180, 104, 0.09)")
-      glowA.addColorStop(0.4, "rgba(177, 125, 171, 0.04)")
+      glowA.addColorStop(0, "rgba(229, 180, 104, 0.04)")
+      glowA.addColorStop(0.4, "rgba(177, 125, 171, 0.018)")
       glowA.addColorStop(1, "rgba(8, 9, 11, 0)")
       ctx.fillStyle = glowA
       ctx.fillRect(0, 0, width, height)
@@ -113,7 +113,7 @@ export function ParticleNetwork() {
         }
       })
 
-      const linkDistance = width < 768 ? 110 : 150
+      const linkDistance = width < 768 ? 105 : 140
 
       for (let i = 0; i < projected.length; i += 1) {
         const a = projected[i]
@@ -126,7 +126,7 @@ export function ParticleNetwork() {
 
           if (dist < linkDistance) {
             const strength = 1 - dist / linkDistance
-            const alpha = (0.035 + strength * 0.12) * (0.65 + a.z * 0.4)
+            const alpha = (0.018 + strength * 0.07) * (0.55 + a.z * 0.32)
             const isViolet = a.color === "violet" || b.color === "violet"
             const lineColor = isViolet ? COLOR_VIOLET : COLOR_AMBER
 
@@ -134,7 +134,7 @@ export function ParticleNetwork() {
             ctx.moveTo(a.px, a.py)
             ctx.lineTo(b.px, b.py)
             ctx.strokeStyle = `rgba(${lineColor}, ${alpha})`
-            ctx.lineWidth = 0.35 + strength * 0.55
+            ctx.lineWidth = 0.25 + strength * 0.4
             ctx.stroke()
           }
         }
@@ -145,22 +145,22 @@ export function ParticleNetwork() {
         const isWhite = node.color === "white"
         const rgb = isViolet ? COLOR_VIOLET : isWhite ? COLOR_WHITE : COLOR_AMBER
         const glowRgb = isViolet ? COLOR_VIOLET : isWhite ? COLOR_WHITE : COLOR_AMBER_BRIGHT
-        const radius = node.size * (0.8 + node.z * 1.3)
+        const radius = node.size * (0.72 + node.z * 1.2)
 
         if (node.glow) {
-          const halo = radius * 2.8
+          const halo = radius * 2.2
           ctx.beginPath()
           ctx.arc(node.px, node.py, halo, 0, Math.PI * 2)
-          ctx.fillStyle = `rgba(${rgb}, ${node.alpha * 0.04})`
+          ctx.fillStyle = `rgba(${rgb}, ${node.alpha * 0.02})`
           ctx.fill()
         }
 
         ctx.beginPath()
         ctx.arc(node.px, node.py, radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(${glowRgb}, ${node.alpha * 0.7})`
+        ctx.fillStyle = `rgba(${glowRgb}, ${node.alpha * 0.5})`
         if (node.glow) {
-          ctx.shadowColor = `rgba(${rgb}, 0.45)`
-          ctx.shadowBlur = 4
+          ctx.shadowColor = `rgba(${rgb}, 0.2)`
+          ctx.shadowBlur = 2
         }
         ctx.fill()
         ctx.shadowBlur = 0
