@@ -54,25 +54,25 @@ export function ParticleNetwork() {
       canvas.height = Math.floor(height * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      const count = width < 768 ? 28 : 44
+      const count = width < 768 ? 24 : 36
       const generated: ConstellationNode[] = []
 
       for (let i = 0; i < count; i += 1) {
         const rand = Math.random()
         const color: ConstellationNode["color"] =
-          rand < 0.68 ? "amber" : rand < 0.9 ? "violet" : "white"
+          rand < 0.7 ? "amber" : rand < 0.92 ? "violet" : "white"
 
         generated.push({
           x: width * (0.08 + Math.random() * 0.84),
           y: height * (0.08 + Math.random() * 0.84),
-          z: 0.4 + Math.random() * 0.8,
+          z: 0.35 + Math.random() * 0.8,
           phase: Math.random() * Math.PI * 2,
-          driftX: (Math.random() - 0.5) * 14,
-          driftY: (Math.random() - 0.5) * 14,
-          size: color === "white" ? 1.1 : 1.4 + Math.random() * 1.2,
-          alpha: color === "white" ? 0.35 : 0.5 + Math.random() * 0.4,
+          driftX: (Math.random() - 0.5) * 10,
+          driftY: (Math.random() - 0.5) * 10,
+          size: color === "white" ? 0.8 : 0.9 + Math.random() * 0.9,
+          alpha: color === "white" ? 0.22 : 0.28 + Math.random() * 0.22,
           color,
-          glow: Math.random() > 0.7,
+          glow: Math.random() > 0.8,
         })
       }
 
@@ -113,7 +113,7 @@ export function ParticleNetwork() {
         }
       })
 
-      const linkDistance = width < 768 ? 120 : 170
+      const linkDistance = width < 768 ? 110 : 150
 
       for (let i = 0; i < projected.length; i += 1) {
         const a = projected[i]
@@ -126,7 +126,7 @@ export function ParticleNetwork() {
 
           if (dist < linkDistance) {
             const strength = 1 - dist / linkDistance
-            const alpha = (0.06 + strength * 0.18) * (0.7 + a.z * 0.5)
+            const alpha = (0.035 + strength * 0.12) * (0.65 + a.z * 0.4)
             const isViolet = a.color === "violet" || b.color === "violet"
             const lineColor = isViolet ? COLOR_VIOLET : COLOR_AMBER
 
@@ -134,7 +134,7 @@ export function ParticleNetwork() {
             ctx.moveTo(a.px, a.py)
             ctx.lineTo(b.px, b.py)
             ctx.strokeStyle = `rgba(${lineColor}, ${alpha})`
-            ctx.lineWidth = 0.5 + strength * 0.9
+            ctx.lineWidth = 0.35 + strength * 0.55
             ctx.stroke()
           }
         }
@@ -145,22 +145,22 @@ export function ParticleNetwork() {
         const isWhite = node.color === "white"
         const rgb = isViolet ? COLOR_VIOLET : isWhite ? COLOR_WHITE : COLOR_AMBER
         const glowRgb = isViolet ? COLOR_VIOLET : isWhite ? COLOR_WHITE : COLOR_AMBER_BRIGHT
-        const radius = node.size * (0.9 + node.z * 1.6)
+        const radius = node.size * (0.8 + node.z * 1.3)
 
         if (node.glow) {
-          const halo = radius * 4.5
+          const halo = radius * 2.8
           ctx.beginPath()
           ctx.arc(node.px, node.py, halo, 0, Math.PI * 2)
-          ctx.fillStyle = `rgba(${rgb}, ${node.alpha * 0.08})`
+          ctx.fillStyle = `rgba(${rgb}, ${node.alpha * 0.04})`
           ctx.fill()
         }
 
         ctx.beginPath()
         ctx.arc(node.px, node.py, radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(${glowRgb}, ${node.alpha})`
+        ctx.fillStyle = `rgba(${glowRgb}, ${node.alpha * 0.7})`
         if (node.glow) {
-          ctx.shadowColor = `rgba(${rgb}, 0.75)`
-          ctx.shadowBlur = 7
+          ctx.shadowColor = `rgba(${rgb}, 0.45)`
+          ctx.shadowBlur = 4
         }
         ctx.fill()
         ctx.shadowBlur = 0
