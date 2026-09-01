@@ -153,6 +153,7 @@
     line-height: 1.6;
     position: relative;
     overflow-x: hidden;
+    isolation: isolate;
   }
 
   body::before {
@@ -160,22 +161,12 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background-image: radial-gradient(circle at 18% 16%, rgba(229, 178, 93, 0.03), transparent 13%),
-      radial-gradient(circle at 85% 18%, rgba(179, 120, 206, 0.02), transparent 14%),
-      radial-gradient(circle at 52% 82%, rgba(255, 255, 255, 0.012), transparent 18%);
-    opacity: 0.45;
+    background-image: radial-gradient(circle at 18% 16%, rgba(229, 178, 93, 0.04), transparent 14%),
+      radial-gradient(circle at 82% 12%, rgba(179, 120, 206, 0.03), transparent 18%),
+      radial-gradient(circle at 55% 80%, rgba(255, 255, 255, 0.02), transparent 16%);
+    opacity: 0.9;
     mix-blend-mode: screen;
-  }
-
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.014) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
-    background-size: 80px 80px;
-    opacity: 0.15;
+    z-index: 0;
   }
 
   ::selection {
@@ -243,13 +234,6 @@
     background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
     background-size: 2px 2px;
     opacity: 0.08;
-  }
-
-  .soft-grid,
-  .bg-grid {
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 56px 56px;
   }
 
   .terminal-glow {

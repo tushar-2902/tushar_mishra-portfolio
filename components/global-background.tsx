@@ -5,6 +5,7 @@ import { ParticleNetwork } from "./particle-network"
 export default function GlobalBackground() {
   return (
     <div
+      aria-hidden="true"
       className="pointer-events-none fixed inset-0 overflow-hidden"
       style={{
         position: "fixed",
@@ -13,8 +14,8 @@ export default function GlobalBackground() {
         height: "100%",
         zIndex: 0,
         pointerEvents: "none",
+        background: "transparent",
       }}
-      aria-hidden="true"
     >
       <ParticleNetwork />
     </div>
