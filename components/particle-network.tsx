@@ -2,10 +2,9 @@
 
 import { useEffect, useRef } from "react"
 
-const COLOR_AMBER = "229, 180, 104"
-const COLOR_AMBER_BRIGHT = "245, 196, 118"
+const COLOR_AMBER = "198, 148, 68"
+const COLOR_AMBER_BRIGHT = "218, 169, 82"
 const COLOR_VIOLET = "177, 125, 171"
-const COLOR_WHITE = "255, 250, 240"
 
 interface ConstellationNode {
   x: number
@@ -16,7 +15,7 @@ interface ConstellationNode {
   driftY: number
   size: number
   alpha: number
-  color: "amber" | "violet" | "white"
+  color: "amber" | "violet"
   glow: boolean
 }
 
@@ -54,13 +53,12 @@ export function ParticleNetwork() {
       canvas.height = Math.floor(height * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      const count = width < 768 ? 22 : 34
+      const count = width < 768 ? 29 : 45
       const generated: ConstellationNode[] = []
 
       for (let i = 0; i < count; i += 1) {
         const rand = Math.random()
-        const color: ConstellationNode["color"] =
-          rand < 0.7 ? "amber" : rand < 0.9 ? "violet" : "white"
+        const color: ConstellationNode["color"] = rand < 0.72 ? "amber" : "violet"
 
         generated.push({
           x: width * (0.08 + Math.random() * 0.84),
@@ -69,8 +67,8 @@ export function ParticleNetwork() {
           phase: Math.random() * Math.PI * 2,
           driftX: (Math.random() - 0.5) * 8,
           driftY: (Math.random() - 0.5) * 8,
-          size: color === "white" ? 0.8 : 0.9 + Math.random() * 0.85,
-          alpha: color === "white" ? 0.22 : 0.28 + Math.random() * 0.2,
+          size: 0.85 + Math.random() * 0.8,
+          alpha: 0.28 + Math.random() * 0.2,
           color,
           glow: Math.random() > 0.82,
         })
@@ -126,7 +124,7 @@ export function ParticleNetwork() {
 
           if (dist < linkDistance) {
             const strength = 1 - dist / linkDistance
-            const alpha = (0.06 + strength * 0.12) * (0.65 + a.z * 0.35)
+            const alpha = (0.075 + strength * 0.15) * (0.65 + a.z * 0.35)
             const isViolet = a.color === "violet" || b.color === "violet"
             const lineColor = isViolet ? COLOR_VIOLET : COLOR_AMBER
 
@@ -142,9 +140,8 @@ export function ParticleNetwork() {
 
       for (const node of projected) {
         const isViolet = node.color === "violet"
-        const isWhite = node.color === "white"
-        const rgb = isViolet ? COLOR_VIOLET : isWhite ? COLOR_WHITE : COLOR_AMBER
-        const glowRgb = isViolet ? COLOR_VIOLET : isWhite ? COLOR_WHITE : COLOR_AMBER_BRIGHT
+        const rgb = isViolet ? COLOR_VIOLET : COLOR_AMBER
+        const glowRgb = isViolet ? COLOR_VIOLET : COLOR_AMBER_BRIGHT
         const radius = node.size * (0.9 + node.z * 1.2)
 
         if (node.glow) {
