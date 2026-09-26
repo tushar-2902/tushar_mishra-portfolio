@@ -21,6 +21,7 @@ interface ConstellationNode {
 
 export function ParticleNetwork() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const motionMultiplier = 1.35
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -98,8 +99,12 @@ export function ParticleNetwork() {
       ctx.fillRect(0, 0, width, height)
 
       const projected = nodes.map((node) => {
-        const driftX = reducedMotion ? 0 : Math.sin(time * 0.00017 + node.phase) * 8 + node.driftX * 0.2
-        const driftY = reducedMotion ? 0 : Math.cos(time * 0.0002 + node.phase) * 8 + node.driftY * 0.2
+        const driftX = reducedMotion
+          ? 0
+          : Math.sin(time * 0.00017 * motionMultiplier + node.phase) * 8 + node.driftX * 0.2
+        const driftY = reducedMotion
+          ? 0
+          : Math.cos(time * 0.0002 * motionMultiplier + node.phase) * 8 + node.driftY * 0.2
 
         const parallaxX = node.x + driftX + mouse.currentX * 14 * node.z
         const parallaxY = node.y + driftY + mouse.currentY * 12 * node.z
